@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 
 class QuitouchHome extends StatefulWidget {
   const QuitouchHome({Key? key}) : super(key: key);
@@ -10,8 +10,8 @@ class QuitouchHome extends StatefulWidget {
 class _QuitouchHomeState extends State<QuitouchHome> {
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: Center(
+    return const CupertinoPageScaffold(
+      child: Center(
         child: Text("test"),
       ),
     );

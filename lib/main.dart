@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:quitouch/views/quitouch_home.dart';
+import 'package:quitouch/view/quitouch_home.dart';
 
 void main() {
   runApp(const Quitouch());
