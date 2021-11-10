@@ -12,11 +12,12 @@ class _QuitouchHomeState extends State<QuitouchHome> {
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text("Quitouch"),
           CupertinoButton(
             child: Text("category CRUD"),
-            onPressed: () => Navigator.pushNamed(context, 'edit'),
+            onPressed: () => Navigator.pushNamed(context, '/edit'),
           )
         ],
       ),

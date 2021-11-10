@@ -47,7 +47,7 @@ class CateRecordRepository {
           touchCount INTEGER NOT NULL,
           createdAt TEXT NOT NULL,
           FOREIGN KEY (cateId) REFERENCES category (id)
-          ON DELETE CASACADE ON UPDATE NO ACTION
+          ON DELETE CASCADE ON UPDATE NO ACTION
         )
       ''');
   }
@@ -73,10 +73,6 @@ class CateRecordRepository {
     if (!isDuplicatedCate) {
       //중복안됨
       category.id = uuid.v4();
-      var debug = await _database!.insert("category", category.toMap());
-      // ignore: avoid_print
-      print(debug.toString() + "이것이 무엇인고?");
-      //id를 생성하여 저장한 객체를 돌려줌
       return category;
     } else {
       //저장된 것이 있음 -> 업데이트 함

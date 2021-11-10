@@ -1,15 +1,13 @@
 // ignore_for_file: avoid_print
 
-import 'package:flutter/material.dart';
 import 'package:quitouch/model/category.dart';
 import 'package:quitouch/repository/cate_record_repo.dart';
 
 class CategoryEditViewModel {
   final repository = CateRecordRepository(); //singleton repo
 
-  List<Category> _categories = [];
-
-  Future<List<Category>> fetch_Categories() async {
+  Future<List<Category>> fetchCategories() async {
+    List<Category> _categories;
     _categories = await repository.selectCategories();
     return _categories;
   }
