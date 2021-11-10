@@ -4,7 +4,7 @@ import 'package:quitouch/model/category.dart';
 import 'package:quitouch/repository/cate_record_repo.dart';
 
 class CategoryEditViewModel {
-  final repository = CateRecordRepository(); //singleton repo
+  final repository = CateRecordRepository();
 
   Future<List<Category>> fetchCategories() async {
     List<Category> _categories;
@@ -14,17 +14,13 @@ class CategoryEditViewModel {
 
   Future<bool> createCategory(String name) async {
     if (name != "" || name.isNotEmpty) {
-      print(name + " is being created");
       Category newCategory = Category();
       newCategory.name = name;
       Category result = await repository.insertOrUpdateCategory(newCategory);
-
-      if (result.id == "null") {
-        print("creation mal func");
-        return false;
-      } else {
-        print(name + " is created");
+      if (result.id != "null") {
         return true;
+      } else {
+        return false;
       }
     } else {
       print("invalid name");
