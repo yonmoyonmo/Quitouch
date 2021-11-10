@@ -32,11 +32,12 @@ class CateRecordRepository {
   }
 
   Future _onCreate(Database db, int version) async {
+    print("create tables......");
     //create table SQL
     await db.execute('''
         CREATE TABLE category(
           id TEXT PRIMARY KEY,
-          name TEXT NOT NULL,
+          name TEXT NOT NULL
         )
       ''');
     await db.execute('''
@@ -45,7 +46,7 @@ class CateRecordRepository {
           cateId TEXT NOT NULL,
           touchCount INTEGER NOT NULL,
           createdAt TEXT NOT NULL,
-          FOREIGN KEY (cataId) REFERENCES category (id)
+          FOREIGN KEY (cateId) REFERENCES category (id)
           ON DELETE CASACADE ON UPDATE NO ACTION
         )
       ''');
@@ -54,6 +55,8 @@ class CateRecordRepository {
   //category, patience record CRUD
   //~~~~~~~~~~~ category ~~~~~~~~~~~~~~~~~~~~~
   Future<bool> isCateDuplicated(Category category) async {
+    _database ??= await init();
+
     var count = Sqflite.firstIntValue(await _database!.rawQuery(
         "SELECT COUNT(*) FROM category WHERE name = ?", [category.name]));
     if (count != 0) {
@@ -64,6 +67,8 @@ class CateRecordRepository {
   }
 
   Future<Category> insertOrUpdateCategory(Category category) async {
+    _database ??= await init();
+
     var isDuplicatedCate = await isCateDuplicated(category);
     if (!isDuplicatedCate) {
       //중복안됨
@@ -82,6 +87,8 @@ class CateRecordRepository {
   }
 
   Future<List<Category>> selectCategories() async {
+    _database ??= await init();
+
     List<Category> categories = [];
     List<Map> results =
         await _database!.query("category", columns: Category.columns);
@@ -92,12 +99,15 @@ class CateRecordRepository {
   }
 
   Future<void> deleteCategoryById(String id) async {
+    _database ??= await init();
     await _database!.delete("category", where: "id = ?", whereArgs: [id]);
   }
 
   //~~~~~~~~~ patience record ~~~~~~~~~~~~~~~~
   Future<PatienceRecord> insertPatienceRecord(
       PatienceRecord patienceRecord) async {
+    _database ??= await init();
+
     patienceRecord.id = uuid.v4();
     await _database!.insert("patience_record", patienceRecord.toMap());
     return patienceRecord;
@@ -105,6 +115,8 @@ class CateRecordRepository {
 
   Future<PatienceRecord> updatePatienceRecord(
       PatienceRecord patienceRecord) async {
+    _database ??= await init();
+
     await _database!.update("patience_record", patienceRecord.toMap(),
         where: "id = ?", whereArgs: [patienceRecord.id]);
     return patienceRecord;
@@ -112,6 +124,8 @@ class CateRecordRepository {
 
   Future<List<PatienceRecord>> selectPatienceRecordByCateWithLimit(
       Category category, int limit, int offset) async {
+    _database ??= await init();
+
     List<PatienceRecord> records = [];
     List<Map> results = await _database!.query(
       "patience_record",
@@ -128,6 +142,8 @@ class CateRecordRepository {
   }
 
   Future<void> deletePatienceRecordById(String id) async {
+    _database ??= await init();
+
     await _database!
         .delete("patience_record", where: "id = ?", whereArgs: [id]);
   }
