@@ -81,6 +81,20 @@ class CateRecordRepository {
     }
   }
 
+  Future<List<Category>> selectCategories() async {
+    List<Category> categories = [];
+    List<Map> results =
+        await _database!.query("category", columns: Category.columns);
+    for (Map result in results) {
+      categories.add(Category.fromMap(result));
+    }
+    return categories;
+  }
+
+  Future<void> deleteCategoryById(String id) async {
+    await _database!.delete("category", where: "id = ?", whereArgs: [id]);
+  }
+
   //~~~~~~~~~ patience record ~~~~~~~~~~~~~~~~
   Future<PatienceRecord> insertPatienceRecord(
       PatienceRecord patienceRecord) async {
@@ -94,5 +108,27 @@ class CateRecordRepository {
     await _database!.update("patience_record", patienceRecord.toMap(),
         where: "id = ?", whereArgs: [patienceRecord.id]);
     return patienceRecord;
+  }
+
+  Future<List<PatienceRecord>> selectPatienceRecordByCateWithLimit(
+      Category category, int limit, int offset) async {
+    List<PatienceRecord> records = [];
+    List<Map> results = await _database!.query(
+      "patience_record",
+      columns: PatienceRecord.columns,
+      where: "cateId = ?",
+      whereArgs: [category.id],
+      limit: limit,
+      offset: offset,
+    );
+    for (Map result in results) {
+      records.add(PatienceRecord.fromMap(result));
+    }
+    return records;
+  }
+
+  Future<void> deletePatienceRecordById(String id) async {
+    await _database!
+        .delete("patience_record", where: "id = ?", whereArgs: [id]);
   }
 }

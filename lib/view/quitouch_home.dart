@@ -10,9 +10,15 @@ class QuitouchHome extends StatefulWidget {
 class _QuitouchHomeState extends State<QuitouchHome> {
   @override
   Widget build(BuildContext context) {
-    return const CupertinoPageScaffold(
-      child: Center(
-        child: Text("quitouch"),
+    return CupertinoPageScaffold(
+      child: Column(
+        children: [
+          Text("Quitouch"),
+          CupertinoButton(
+            child: Text("category CRUD"),
+            onPressed: () => Navigator.pushNamed(context, 'edit'),
+          )
+        ],
       ),
     );
   }
