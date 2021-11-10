@@ -12,7 +12,7 @@ class _QuitouchHomeState extends State<QuitouchHome> {
   Widget build(BuildContext context) {
     return const CupertinoPageScaffold(
       child: Center(
-        child: Text("test"),
+        child: Text("quitouch"),
       ),
     );
   }
