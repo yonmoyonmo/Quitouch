@@ -144,7 +144,7 @@ class _CategoryEditState extends State<CategoryEdit> {
               ),
             ],
           ),
-          Text("categories"),
+          const Text("categories"),
           FutureBuilder(
             future: vm.fetchCategories(),
             builder: (context, snapshot) {

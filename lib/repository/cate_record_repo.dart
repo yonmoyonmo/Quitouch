@@ -109,7 +109,18 @@ class CateRecordRepository {
 
   Future<void> deletePatienceRecordById(String id) async {
     final db = await dbClient.database;
-
     await db!.delete("patience_record", where: "id = ?", whereArgs: [id]);
+  }
+
+  Future<int> countOfPatienceRecords(Category selectedCategory) async {
+    final db = await dbClient.database;
+    var count = Sqflite.firstIntValue(await db!.rawQuery(
+        "SELECT COUNT(*) FROM patience_record WHERE cateId = ?",
+        [selectedCategory.id]));
+    if (count != null) {
+      return count;
+    } else {
+      return 0;
+    }
   }
 }

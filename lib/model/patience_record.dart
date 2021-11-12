@@ -1,9 +1,11 @@
+import 'package:intl/intl.dart';
+
 class PatienceRecord {
   static final columns = ["id", "touchCount", "cateId", "createdAt"];
   String id = "null";
   int touchCount = 0;
   String cateId = "null";
-  String createdAt = DateTime.now().toString();
+  String createdAt = DateFormat('yyyy-MM-dd kk:mm:ss').format(DateTime.now());
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {

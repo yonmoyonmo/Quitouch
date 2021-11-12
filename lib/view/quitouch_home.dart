@@ -26,11 +26,14 @@ class _QuitouchHomeState extends State<QuitouchHome> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               CupertinoButton(
-                child: Text("records"),
-                onPressed: () {},
+                child: const Text("records"),
+                onPressed: () async {
+                  await Navigator.pushNamed(context, '/records');
+                  setState(() {});
+                },
               ),
               CupertinoButton(
-                child: Text("category CRUD"),
+                child: const Text("category CRUD"),
                 onPressed: () async {
                   await Navigator.pushNamed(context, '/edit');
                   setState(() {});
@@ -38,7 +41,7 @@ class _QuitouchHomeState extends State<QuitouchHome> {
               ),
             ],
           ),
-          Container(
+          SizedBox(
             width: double.infinity,
             height: MediaQuery.of(context).size.height / 10,
             child: FutureBuilder(
@@ -61,7 +64,7 @@ class _QuitouchHomeState extends State<QuitouchHome> {
                     },
                   );
                 } else {
-                  return Text("loading..");
+                  return const Text("loading..");
                 }
               },
             ),
@@ -81,16 +84,19 @@ class _QuitouchHomeState extends State<QuitouchHome> {
           ),
           Text(touchCount.toString()),
           const SizedBox(height: 20),
-          CupertinoButton.filled(
-            child: const Text("done"),
-            onPressed: () async {
-              bool result = await vm.createPatienceRecord(
-                  touchCount, selectedCategory!.id);
-              setState(() {
-                touchCount = 0;
-              });
-            },
-          ),
+          if (selectedCategory != null)
+            CupertinoButton.filled(
+              child: const Text("done"),
+              onPressed: () async {
+                if (touchCount != 0) {
+                  await vm.createPatienceRecord(
+                      touchCount, selectedCategory!.id);
+                  setState(() {
+                    touchCount = 0;
+                  });
+                }
+              },
+            ),
         ],
       ),
     );
