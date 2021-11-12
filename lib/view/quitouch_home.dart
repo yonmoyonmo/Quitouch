@@ -16,6 +16,31 @@ class _QuitouchHomeState extends State<QuitouchHome> {
   Category? selectedCategory;
   int touchCount = 0;
 
+  void _wellDoneAlert(int count) {
+    showCupertinoDialog(
+      barrierDismissible: true,
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: const Text("Well Done!!"),
+          content: Column(children: [
+            Text(count.toString()),
+            const Image(image: AssetImage("images/sample.png")),
+          ]),
+          actions: [
+            CupertinoDialogAction(
+              isDefaultAction: true,
+              child: const Text("confirm"),
+              onPressed: () async {
+                Navigator.pop(context);
+              },
+            )
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -33,7 +58,7 @@ class _QuitouchHomeState extends State<QuitouchHome> {
                 },
               ),
               CupertinoButton(
-                child: const Text("category CRUD"),
+                child: const Text("categories"),
                 onPressed: () async {
                   await Navigator.pushNamed(context, '/edit');
                   setState(() {});
@@ -82,15 +107,16 @@ class _QuitouchHomeState extends State<QuitouchHome> {
               color: Colors.black,
             ),
           ),
-          Text(touchCount.toString()),
+          if (touchCount != 0) Text(touchCount.toString()),
           const SizedBox(height: 20),
-          if (selectedCategory != null)
+          if (selectedCategory != null && touchCount != 0)
             CupertinoButton.filled(
               child: const Text("done"),
               onPressed: () async {
                 if (touchCount != 0) {
                   await vm.createPatienceRecord(
                       touchCount, selectedCategory!.id);
+                  _wellDoneAlert(touchCount);
                   setState(() {
                     touchCount = 0;
                   });
