@@ -92,6 +92,37 @@ class _CategoryEditState extends State<CategoryEdit> {
     );
   }
 
+  void _showCateDeleteAlert(Category selectedCate) {
+    showCupertinoDialog(
+      barrierDismissible: true,
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: const Text("Delete Category"),
+          content: Column(children: [
+            const Text(
+                "if you delete this category, records under this will be deleted also"),
+            Text(
+              selectedCate.name,
+              style: const TextStyle(fontSize: 20),
+            )
+          ]),
+          actions: [
+            CupertinoDialogAction(
+              isDefaultAction: true,
+              child: const Text("confirm delete"),
+              onPressed: () async {
+                await vm.deleteCategory(selectedCate);
+                setState(() {});
+                Navigator.pop(context);
+              },
+            )
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -130,15 +161,28 @@ class _CategoryEditState extends State<CategoryEdit> {
                           child: Text(categories[index].name),
                           padding: const EdgeInsets.all(10),
                         ),
-                        CupertinoButton(
-                          child: const Icon(
-                            Icons.edit,
-                            color: Colors.black,
-                          ),
-                          onPressed: () {
-                            _showCateEditAlert(categories[index]);
-                          },
-                        ),
+                        Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              CupertinoButton(
+                                child: const Icon(
+                                  Icons.edit,
+                                  color: Colors.black,
+                                ),
+                                onPressed: () {
+                                  _showCateEditAlert(categories[index]);
+                                },
+                              ),
+                              CupertinoButton(
+                                child: const Icon(
+                                  Icons.delete,
+                                  color: Colors.black,
+                                ),
+                                onPressed: () {
+                                  _showCateDeleteAlert(categories[index]);
+                                },
+                              ),
+                            ]),
                       ],
                     );
                   },

@@ -42,4 +42,14 @@ class CategoryEditViewModel {
       return false;
     }
   }
+
+  Future<bool> deleteCategory(Category selectedCategory) async {
+    if (selectedCategory.id != "null") {
+      await repository.deleteCategoryById(selectedCategory.id);
+      return true;
+    } else {
+      print("delete cate failed : id == null");
+      return false;
+    }
+  }
 }
