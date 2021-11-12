@@ -69,6 +69,7 @@ class CateRecordRepository {
 
     patienceRecord.id = uuid.v4();
     await db!.insert("patience_record", patienceRecord.toMap());
+    print("new patience record inserted");
     return patienceRecord;
   }
 

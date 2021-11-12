@@ -3,7 +3,7 @@ class PatienceRecord {
   String id = "null";
   int touchCount = 0;
   String cateId = "null";
-  DateTime createdAt = DateTime.now();
+  String createdAt = DateTime.now().toString();
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {
