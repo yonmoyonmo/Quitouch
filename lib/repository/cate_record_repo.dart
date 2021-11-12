@@ -16,7 +16,7 @@ class CateRecordRepository {
 
   //category, patience record CRUD
   //~~~~~~~~~~~ category ~~~~~~~~~~~~~~~~~~~~~
-  Future<bool> isCateDuplicated(Category category) async {
+  Future<bool> isCateDuplicatedName(Category category) async {
     final db = await dbClient.database;
     var count = Sqflite.firstIntValue(await db!.rawQuery(
         "SELECT COUNT(*) FROM category WHERE name = ?", [category.name]));
@@ -27,22 +27,28 @@ class CateRecordRepository {
     }
   }
 
-  Future<Category> insertOrUpdateCategory(Category category) async {
+  Future<Category> insertCategory(Category category) async {
     final db = await dbClient.database;
-
-    var isDuplicatedCate = await isCateDuplicated(category);
+    var isDuplicatedCate = await isCateDuplicatedName(category);
     if (!isDuplicatedCate) {
-      print(category.name + " is being created");
-
       category.id = uuid.v4();
       await db!.insert("category", category.toMap());
-
-      print(category.name + " is created");
       return category;
     } else {
-      //저장된 것이 있음 -> 업데이트 함
+      category.name = "name duplicated";
+      return category;
+    }
+  }
+
+  Future<Category> updateCategory(Category category) async {
+    final db = await dbClient.database;
+    var isDuplicatedCate = await isCateDuplicatedName(category);
+    if (!isDuplicatedCate) {
       await db!.update("category", category.toMap(),
           where: "id = ?", whereArgs: [category.id]);
+      return category;
+    } else {
+      category.name = "name duplicated";
       return category;
     }
   }

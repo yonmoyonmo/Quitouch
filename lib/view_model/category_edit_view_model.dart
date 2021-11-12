@@ -16,14 +16,29 @@ class CategoryEditViewModel {
     if (name != "" || name.isNotEmpty) {
       Category newCategory = Category();
       newCategory.name = name;
-      Category result = await repository.insertOrUpdateCategory(newCategory);
-      if (result.id != "null") {
+      Category result = await repository.insertCategory(newCategory);
+      if (result.id != "null" && result.name != "name duplicated") {
         return true;
       } else {
         return false;
       }
     } else {
       print("invalid name");
+      return false;
+    }
+  }
+
+  Future<bool> updateCategory(Category selectedCategory, String newName) async {
+    if (selectedCategory.id != "null") {
+      selectedCategory.name = newName;
+      Category result = await repository.updateCategory(selectedCategory);
+      if (result.name != "name duplicated") {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      print("update cate failed : id == null");
       return false;
     }
   }

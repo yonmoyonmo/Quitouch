@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:quitouch/model/category.dart';
 import 'package:quitouch/view_model/category_edit_view_model.dart';
 
@@ -12,6 +13,84 @@ class CategoryEdit extends StatefulWidget {
 class _CategoryEditState extends State<CategoryEdit> {
   final vm = CategoryEditViewModel();
   var cateName = "";
+  var cateEditName = "";
+
+  void _showCateAddAlert() {
+    showCupertinoDialog(
+      barrierDismissible: true,
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: const Text("add category"),
+          content: CupertinoTextField(
+            onChanged: (text) {
+              setState(() {
+                cateName = text;
+              });
+            },
+          ),
+          actions: [
+            CupertinoDialogAction(
+                isDefaultAction: true,
+                child: const Text("create category"),
+                onPressed: () async {
+                  if (cateName != "") {
+                    await vm.createCategory(cateName);
+                    setState(() {
+                      cateName = "";
+                    });
+                    Navigator.pop(context);
+                  } else {
+                    return;
+                  }
+                })
+          ],
+        );
+      },
+    );
+  }
+
+  void _showCateEditAlert(Category selectedCate) {
+    showCupertinoDialog(
+      barrierDismissible: true,
+      context: context,
+      builder: (context) {
+        return CupertinoAlertDialog(
+          title: const Text("Edit Category Name"),
+          content: Column(children: [
+            Text(
+              selectedCate.name,
+              style: const TextStyle(fontSize: 20),
+            ),
+            CupertinoTextField(
+              onChanged: (text) {
+                setState(() {
+                  cateEditName = text;
+                });
+              },
+            ),
+          ]),
+          actions: [
+            CupertinoDialogAction(
+              isDefaultAction: true,
+              child: const Text("confirm edit"),
+              onPressed: () async {
+                if (cateEditName != "") {
+                  await vm.updateCategory(selectedCate, cateEditName);
+                  setState(() {
+                    cateEditName = "";
+                  });
+                  Navigator.pop(context);
+                } else {
+                  return;
+                }
+              },
+            )
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,39 +98,22 @@ class _CategoryEditState extends State<CategoryEdit> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text("category edit"),
-          CupertinoButton(
-            child: Text("home"),
-            onPressed: () => Navigator.pop(context),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              CupertinoButton(
+                child: Text("home"),
+                onPressed: () => Navigator.pop(context),
+              ),
+              CupertinoButton(
+                child: Icon(Icons.add),
+                onPressed: () {
+                  _showCateAddAlert();
+                },
+              ),
+            ],
           ),
-          Container(
-            padding: EdgeInsets.all(13),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CupertinoTextField(
-                  onChanged: (text) {
-                    setState(() {
-                      cateName = text;
-                    });
-                  },
-                ),
-                CupertinoButton(
-                  child: Text("create cate"),
-                  onPressed: () async {
-                    if (cateName != "") {
-                      await vm.createCategory(cateName);
-                      setState(() {
-                        cateName = "";
-                      });
-                    } else {
-                      return;
-                    }
-                  },
-                )
-              ],
-            ),
-          ),
+          Text("categories"),
           FutureBuilder(
             future: vm.fetchCategories(),
             builder: (context, snapshot) {
@@ -61,7 +123,24 @@ class _CategoryEditState extends State<CategoryEdit> {
                   shrinkWrap: true,
                   itemCount: categories.length,
                   itemBuilder: (context, index) {
-                    return Text(categories[index].name);
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          child: Text(categories[index].name),
+                          padding: const EdgeInsets.all(10),
+                        ),
+                        CupertinoButton(
+                          child: const Icon(
+                            Icons.edit,
+                            color: Colors.black,
+                          ),
+                          onPressed: () {
+                            _showCateEditAlert(categories[index]);
+                          },
+                        ),
+                      ],
+                    );
                   },
                 );
               } else {
