@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:quitouch/model/category.dart';
 import 'package:quitouch/view_model/home_view_model.dart';
+import 'package:flutter/services.dart';
 
 class QuitouchHome extends StatefulWidget {
   const QuitouchHome({Key? key}) : super(key: key);
@@ -25,7 +26,8 @@ class _QuitouchHomeState extends State<QuitouchHome> {
           title: const Text("Well Done!!"),
           content: Column(children: [
             Text(count.toString()),
-            const Image(image: AssetImage("images/sample.png")),
+            SizedBox(height: 10),
+            const Image(image: AssetImage("images/quitachi_done.png")),
           ]),
           actions: [
             CupertinoDialogAction(
@@ -97,18 +99,15 @@ class _QuitouchHomeState extends State<QuitouchHome> {
           Text(selectedCategory != null ? selectedCategory!.name : ""),
           CupertinoButton(
             onPressed: () {
+              HapticFeedback.mediumImpact();
               setState(() {
                 touchCount++;
               });
             },
-            child: const Icon(
-              Icons.blur_circular,
-              size: 100,
-              color: Colors.black,
-            ),
+            child: const Image(image: AssetImage("images/quitachi.png")),
           ),
           if (touchCount != 0) Text(touchCount.toString()),
-          const SizedBox(height: 20),
+          SizedBox(height: 20),
           if (selectedCategory != null && touchCount != 0)
             CupertinoButton.filled(
               child: const Text("done"),
