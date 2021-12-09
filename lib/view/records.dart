@@ -20,26 +20,24 @@ class _RecordsState extends State<Records> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CupertinoButton(
-                child: const Text("home"),
-                onPressed: () => Navigator.pop(context),
-              ),
-              CupertinoButton(
-                child: const Text("chart"),
-                onPressed: () {},
-              ),
-            ],
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.grey,
+        title: Text("scaffold"),
+        actions: [
+          CupertinoButton(
+            child: const Text("home"),
+            onPressed: () => Navigator.pop(context),
           ),
-          SizedBox(
+        ],
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Container(
             width: double.infinity,
             height: MediaQuery.of(context).size.height / 10,
+            decoration: BoxDecoration(color: Colors.amber),
             child: FutureBuilder(
               future: vm.fetchCategories(),
               builder: (context, snapshot) {

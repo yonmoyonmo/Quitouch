@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:quitouch/repository/dbclient.dart';
 import 'package:quitouch/view/category_edit.dart';
 import 'package:quitouch/view/quitouch_home.dart';
@@ -15,7 +16,7 @@ class Quitouch extends StatelessWidget {
   const Quitouch({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return CupertinoApp(
+    return MaterialApp(
       routes: {
         '/': (_) => QuitouchHome(),
         '/edit': (_) => CategoryEdit(),

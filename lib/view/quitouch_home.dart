@@ -45,32 +45,34 @@ class _QuitouchHomeState extends State<QuitouchHome> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CupertinoButton(
-                child: const Text("records"),
-                onPressed: () async {
-                  await Navigator.pushNamed(context, '/records');
-                  setState(() {});
-                },
-              ),
-              CupertinoButton(
-                child: const Text("categories"),
-                onPressed: () async {
-                  await Navigator.pushNamed(context, '/edit');
-                  setState(() {});
-                },
-              ),
-            ],
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.grey,
+        title: Text("scaffold"),
+        actions: [
+          CupertinoButton(
+            child: const Text("records"),
+            onPressed: () async {
+              await Navigator.pushNamed(context, '/records');
+              setState(() {});
+            },
           ),
-          SizedBox(
+          CupertinoButton(
+            child: const Text("categories"),
+            onPressed: () async {
+              await Navigator.pushNamed(context, '/edit');
+              setState(() {});
+            },
+          ),
+        ],
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Container(
             width: double.infinity,
             height: MediaQuery.of(context).size.height / 10,
+            decoration: BoxDecoration(color: Colors.amber),
             child: FutureBuilder(
               future: vm.fetchCategories(),
               builder: (context, snapshot) {
@@ -97,6 +99,7 @@ class _QuitouchHomeState extends State<QuitouchHome> {
             ),
           ),
           Text(selectedCategory != null ? selectedCategory!.name : ""),
+          //
           CupertinoButton(
             onPressed: () {
               HapticFeedback.mediumImpact();
@@ -106,8 +109,8 @@ class _QuitouchHomeState extends State<QuitouchHome> {
             },
             child: const Image(image: AssetImage("images/quitachi.png")),
           ),
+          //
           if (touchCount != 0) Text(touchCount.toString()),
-          SizedBox(height: 20),
           if (selectedCategory != null && touchCount != 0)
             CupertinoButton.filled(
               child: const Text("done"),

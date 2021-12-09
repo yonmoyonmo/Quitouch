@@ -125,25 +125,26 @@ class _CategoryEditState extends State<CategoryEdit> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              CupertinoButton(
-                child: Text("home"),
-                onPressed: () => Navigator.pop(context),
-              ),
-              CupertinoButton(
-                child: Icon(Icons.add),
-                onPressed: () {
-                  _showCateAddAlert();
-                },
-              ),
-            ],
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.grey,
+        title: Text("scaffold"),
+        actions: [
+          CupertinoButton(
+            child: Text("home"),
+            onPressed: () => Navigator.pop(context),
           ),
+          CupertinoButton(
+            child: Icon(Icons.add),
+            onPressed: () {
+              _showCateAddAlert();
+            },
+          ),
+        ],
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
           const Text("categories"),
           FutureBuilder(
             future: vm.fetchCategories(),
