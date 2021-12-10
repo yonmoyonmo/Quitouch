@@ -140,73 +140,81 @@ class _CategoryEditState extends State<CategoryEdit> {
   Widget build(BuildContext context) {
     TextStyle textStyle01 = TextStyle(color: Colors.white, fontSize: 20);
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.grey,
-        title: Text("Quitouch Categories"),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () {
-              _showCateAddAlert();
-            },
-          ),
-        ],
-      ),
-      body: FutureBuilder(
-        future: vm.fetchCategories(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            List<Category> categories = snapshot.data as List<Category>;
-            return ListView.builder(
-              scrollDirection: Axis.vertical,
-              shrinkWrap: true,
-              itemCount: categories.length,
-              itemBuilder: (context, index) {
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          _showCateEditAlert(categories[index]);
-                        });
-                      },
-                      child: Container(
-                        width: 240,
-                        height: 100,
-                        padding: EdgeInsets.all(10),
-                        margin: EdgeInsets.all(10),
-                        alignment: Alignment.center,
-                        child: Text(
-                          categories[index].name,
-                          style: textStyle01,
-                        ),
-                        decoration: BoxDecoration(
-                          image: DecorationImage(
-                              image: AssetImage("images/quitouch_button.png"),
-                              fit: BoxFit.contain),
-                        ),
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(
-                        Icons.delete,
-                        color: Colors.black,
-                        size: 50,
-                      ),
-                      onPressed: () {
-                        _showCateDeleteAlert(categories[index]);
-                      },
-                    ),
-                  ],
-                );
+    return Container(
+      decoration: BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage("images/backgroundImage.png"),
+              fit: BoxFit.cover)),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          elevation: 0.0,
+          backgroundColor: Colors.transparent,
+          title: Text("Quitouch Categories"),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () {
+                _showCateAddAlert();
               },
-            );
-          } else {
-            return const Text("loading..");
-          }
-        },
+            ),
+          ],
+        ),
+        body: FutureBuilder(
+          future: vm.fetchCategories(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              List<Category> categories = snapshot.data as List<Category>;
+              return ListView.builder(
+                scrollDirection: Axis.vertical,
+                shrinkWrap: true,
+                itemCount: categories.length,
+                itemBuilder: (context, index) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            _showCateEditAlert(categories[index]);
+                          });
+                        },
+                        child: Container(
+                          width: 240,
+                          height: 100,
+                          padding: EdgeInsets.all(10),
+                          margin: EdgeInsets.all(10),
+                          alignment: Alignment.center,
+                          child: Text(
+                            categories[index].name,
+                            style: textStyle01,
+                          ),
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: AssetImage("images/quitouch_button.png"),
+                                fit: BoxFit.contain),
+                          ),
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(
+                          Icons.delete,
+                          color: Colors.black,
+                          size: 50,
+                        ),
+                        onPressed: () {
+                          _showCateDeleteAlert(categories[index]);
+                        },
+                      ),
+                    ],
+                  );
+                },
+              );
+            } else {
+              return const Text("loading..");
+            }
+          },
+        ),
       ),
     );
   }

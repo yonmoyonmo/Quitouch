@@ -7,7 +7,14 @@ class HomeViewModel {
 
   Future<List<Category>> fetchCategories() async {
     List<Category> _categories;
+    var defaultCategory = new Category();
+
     _categories = await repository.selectCategories();
+    if (_categories.isEmpty) {
+      defaultCategory.name = "make a category!!";
+      Category result = await repository.insertCategory(defaultCategory);
+      _categories.add(result);
+    }
     return _categories;
   }
 

@@ -21,10 +21,7 @@ class Quitouch extends StatelessWidget {
         fontFamily: 'DungGeunMo',
         visualDensity: VisualDensity.adaptivePlatformDensity,
         brightness: Brightness.light,
-        backgroundColor: Colors.white,
-        primaryColor: Colors.blueGrey,
-        primarySwatch: Colors.blueGrey,
-        scaffoldBackgroundColor: Colors.white,
+        primaryColor: Color.fromRGBO(143, 255, 129, 1),
       ),
       routes: {
         '/': (_) => QuitouchHome(),

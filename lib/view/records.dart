@@ -14,10 +14,17 @@ class Records extends StatefulWidget {
 
 class _RecordsState extends State<Records> {
   final vm = RecordsViewModel();
+  late Future<dynamic> _futureCategories;
   Category? selectedCategory;
   var howMany = 0;
   var currentPageCount = 0;
   var offset = 0;
+
+  @override
+  void initState() {
+    _futureCategories = vm.fetchCategories();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,185 +32,220 @@ class _RecordsState extends State<Records> {
     TextStyle textStyle02 = TextStyle(color: Colors.white, fontSize: 24);
     TextStyle textStyle03 = TextStyle(color: Colors.black, fontSize: 20);
 
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.grey,
-        title: Text("Quitouch Records"),
-        actions: [
-          CupertinoButton(
-            child: const Text("dummy"),
-            onPressed: () {},
-          ),
-        ],
+    return Container(
+      decoration: BoxDecoration(
+        image: DecorationImage(
+          image: AssetImage("images/backgroundImage.png"),
+          fit: BoxFit.cover,
+        ),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          //cates
-          Container(
-            width: double.infinity,
-            height: MediaQuery.of(context).size.height / 10,
-            decoration: BoxDecoration(color: Colors.amber),
-            child: FutureBuilder(
-              future: vm.fetchCategories(),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  List<Category> categories = snapshot.data as List<Category>;
-                  return ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: true,
-                    itemCount: categories.length,
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () {
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        appBar: AppBar(
+          elevation: 0.0,
+          backgroundColor: Colors.transparent,
+          title: Text("Quitouch Records"),
+          // actions: [
+          //   CupertinoButton(
+          //     child: const Text("dummy"),
+          //     onPressed: () {},
+          //   ),
+          // ],
+        ),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            //cates
+            Container(
+              width: double.infinity,
+              height: MediaQuery.of(context).size.height / 10,
+              decoration: BoxDecoration(color: Colors.transparent),
+              child: FutureBuilder(
+                future: _futureCategories,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    List<Category> categories = snapshot.data as List<Category>;
+                    return ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      shrinkWrap: true,
+                      itemCount: categories.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              selectedCategory = categories[index];
+                            });
+                          },
+                          child: Container(
+                            width: 132,
+                            height: 55,
+                            padding: EdgeInsets.all(10),
+                            margin: EdgeInsets.all(10),
+                            alignment: Alignment.center,
+                            child: Text(
+                              categories[index].name,
+                              style: textStyle01,
+                            ),
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                  image:
+                                      AssetImage("images/quitouch_button.png"),
+                                  fit: BoxFit.contain),
+                            ),
+                          ),
+                        );
+                      },
+                    );
+                  } else {
+                    return const Text("loading..");
+                  }
+                },
+              ),
+            ),
+            //selected cate
+            Container(
+              width: 240,
+              height: 100,
+              margin: EdgeInsets.all(10),
+              alignment: Alignment.center,
+              child: Text(
+                selectedCategory != null
+                    ? selectedCategory!.name
+                    : "select one!",
+                style: textStyle02,
+              ),
+              decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage("images/selected_cate.png"),
+                    fit: BoxFit.contain),
+              ),
+            ),
+            //times
+            Text(
+              howMany != 0 ? howMany.toString() + " times" : "0 times",
+              style: textStyle03,
+            ),
+
+            if (selectedCategory != null)
+              Column(
+                children: [
+                  //page buttons
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      TextButton(
+                        child: Row(children: const [
+                          Icon(
+                            Icons.arrow_back_ios,
+                            color: Colors.black,
+                          ),
+                          Text(
+                            "previous page",
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ]),
+                        onPressed: () {
+                          if (offset != 0) {
+                            setState(() {
+                              offset = offset - 20;
+                            });
+                          }
+                        },
+                      ),
+                      TextButton(
+                        child: Row(children: const [
+                          Text(
+                            "next page",
+                            style: TextStyle(
+                              fontSize: 20,
+                              color: Colors.black,
+                            ),
+                          ),
+                          Icon(
+                            Icons.arrow_forward_ios,
+                            color: Colors.black,
+                          ),
+                        ]),
+                        onPressed: () {
                           setState(() {
-                            selectedCategory = categories[index];
+                            if (currentPageCount > 19) {
+                              offset += 20;
+                            }
                           });
                         },
-                        child: Container(
-                          width: 132,
-                          height: 55,
-                          padding: EdgeInsets.all(10),
-                          margin: EdgeInsets.all(10),
-                          alignment: Alignment.center,
-                          child: Text(
-                            categories[index].name,
-                            style: textStyle01,
-                          ),
-                          decoration: BoxDecoration(
-                            image: DecorationImage(
-                                image: AssetImage("images/quitouch_button.png"),
-                                fit: BoxFit.contain),
-                          ),
-                        ),
-                      );
-                    },
-                  );
-                } else {
-                  return const Text("loading..");
-                }
-              },
-            ),
-          ),
-          //selected cate
-          Container(
-            width: 240,
-            height: 100,
-            margin: EdgeInsets.all(10),
-            alignment: Alignment.center,
-            child: Text(
-              selectedCategory != null ? selectedCategory!.name : "select one!",
-              style: textStyle02,
-            ),
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage("images/quitouch_button.png"),
-                  fit: BoxFit.contain),
-            ),
-          ),
-          //times
-          Text(
-            howMany != 0 ? howMany.toString() + " times" : "0 times",
-            style: textStyle03,
-          ),
+                      ),
+                    ],
+                  ),
+                  //records
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Color.fromRGBO(181, 181, 181, 1),
+                    ),
+                    height: MediaQuery.of(context).size.height * 0.5,
+                    padding: EdgeInsets.all(10),
+                    margin: EdgeInsets.all(10),
+                    child: FutureBuilder(
+                      future:
+                          vm.fetchPatiencRecords(selectedCategory!, 20, offset),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          List<PatienceRecord> records =
+                              snapshot.data as List<PatienceRecord>;
 
-          if (selectedCategory != null)
-            Column(
-              children: [
-                //page buttons
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    TextButton(
-                      child: Row(children: const [
-                        Icon(Icons.arrow_back_ios),
-                        Text("previous page"),
-                      ]),
-                      onPressed: () {
-                        if (offset != 0) {
-                          setState(() {
-                            offset = offset - 20;
+                          SchedulerBinding.instance!.addPostFrameCallback((_) {
+                            setState(() {
+                              howMany = vm.counts;
+                              currentPageCount = vm.currentPageCounts;
+                            });
                           });
+
+                          return ListView.builder(
+                            scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+                            itemCount: records.length,
+                            itemBuilder: (context, index) {
+                              return Container(
+                                padding: EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                    border: Border(
+                                  bottom:
+                                      BorderSide(color: Colors.black, width: 1),
+                                )),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      (index + 1).toString(),
+                                      style: textStyle03,
+                                    ),
+                                    Text(
+                                      "touch : " +
+                                          records[index].touchCount.toString(),
+                                      style: textStyle03,
+                                    ),
+                                    Text(
+                                      records[index].createdAt,
+                                      style: textStyle03,
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        } else {
+                          return const Text("loading..");
                         }
                       },
                     ),
-                    TextButton(
-                      child: Row(children: const [
-                        Text("next page"),
-                        Icon(Icons.arrow_forward_ios),
-                      ]),
-                      onPressed: () {
-                        setState(() {
-                          if (currentPageCount > 19) {
-                            offset += 20;
-                          }
-                        });
-                      },
-                    ),
-                  ],
-                ),
-                //records
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.5,
-                  padding: EdgeInsets.all(10),
-                  child: FutureBuilder(
-                    future:
-                        vm.fetchPatiencRecords(selectedCategory!, 20, offset),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        List<PatienceRecord> records =
-                            snapshot.data as List<PatienceRecord>;
-
-                        SchedulerBinding.instance!.addPostFrameCallback((_) {
-                          setState(() {
-                            howMany = vm.counts;
-                            currentPageCount = vm.currentPageCounts;
-                          });
-                        });
-
-                        return ListView.builder(
-                          scrollDirection: Axis.vertical,
-                          shrinkWrap: true,
-                          itemCount: records.length,
-                          itemBuilder: (context, index) {
-                            return Container(
-                              padding: EdgeInsets.all(10),
-                              decoration: BoxDecoration(
-                                  border: Border(
-                                bottom:
-                                    BorderSide(color: Colors.black, width: 1),
-                              )),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    (index + 1).toString(),
-                                    style: textStyle03,
-                                  ),
-                                  Text(
-                                    "touch : " +
-                                        records[index].touchCount.toString(),
-                                    style: textStyle03,
-                                  ),
-                                  Text(
-                                    records[index].createdAt,
-                                    style: textStyle03,
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        );
-                      } else {
-                        return const Text("loading..");
-                      }
-                    },
                   ),
-                ),
-              ],
-            ),
-        ],
+                ],
+              ),
+          ],
+        ),
       ),
     );
   }
