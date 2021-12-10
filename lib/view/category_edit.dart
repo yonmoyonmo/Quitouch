@@ -16,13 +16,16 @@ class _CategoryEditState extends State<CategoryEdit> {
   var cateEditName = "";
 
   void _showCateAddAlert() {
-    showCupertinoDialog(
+    showDialog(
       barrierDismissible: true,
       context: context,
       builder: (context) {
-        return CupertinoAlertDialog(
+        return AlertDialog(
           title: const Text("add category"),
-          content: CupertinoTextField(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+          content: TextField(
+            maxLength: 20,
             onChanged: (text) {
               setState(() {
                 cateName = text;
@@ -30,8 +33,7 @@ class _CategoryEditState extends State<CategoryEdit> {
             },
           ),
           actions: [
-            CupertinoDialogAction(
-                isDefaultAction: true,
+            ElevatedButton(
                 child: const Text("create category"),
                 onPressed: () async {
                   if (cateName != "") {
@@ -51,28 +53,34 @@ class _CategoryEditState extends State<CategoryEdit> {
   }
 
   void _showCateEditAlert(Category selectedCate) {
-    showCupertinoDialog(
+    showDialog(
       barrierDismissible: true,
       context: context,
       builder: (context) {
-        return CupertinoAlertDialog(
+        return AlertDialog(
           title: const Text("Edit Category Name"),
-          content: Column(children: [
-            Text(
-              selectedCate.name,
-              style: const TextStyle(fontSize: 20),
-            ),
-            CupertinoTextField(
-              onChanged: (text) {
-                setState(() {
-                  cateEditName = text;
-                });
-              },
-            ),
-          ]),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+          content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(
+                  selectedCate.name,
+                  style: const TextStyle(fontSize: 20),
+                ),
+                TextField(
+                  maxLength: 20,
+                  onChanged: (text) {
+                    setState(() {
+                      cateEditName = text;
+                    });
+                  },
+                ),
+              ]),
           actions: [
-            CupertinoDialogAction(
-              isDefaultAction: true,
+            ElevatedButton(
               child: const Text("confirm edit"),
               onPressed: () async {
                 if (cateEditName != "") {
@@ -93,23 +101,28 @@ class _CategoryEditState extends State<CategoryEdit> {
   }
 
   void _showCateDeleteAlert(Category selectedCate) {
-    showCupertinoDialog(
+    showDialog(
       barrierDismissible: true,
       context: context,
       builder: (context) {
-        return CupertinoAlertDialog(
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
           title: const Text("Delete Category"),
-          content: Column(children: [
-            const Text(
-                "if you delete this category, records under this will be deleted also"),
-            Text(
-              selectedCate.name,
-              style: const TextStyle(fontSize: 20),
-            )
-          ]),
+          content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                const Text(
+                    "if you delete this category, records under this will be deleted also"),
+                Text(
+                  selectedCate.name,
+                  style: const TextStyle(fontSize: 20),
+                )
+              ]),
           actions: [
-            CupertinoDialogAction(
-              isDefaultAction: true,
+            ElevatedButton(
               child: const Text("confirm delete"),
               onPressed: () async {
                 await vm.deleteCategory(selectedCate);
@@ -125,76 +138,91 @@ class _CategoryEditState extends State<CategoryEdit> {
 
   @override
   Widget build(BuildContext context) {
+    TextStyle textStyle01 = TextStyle(color: Colors.white, fontSize: 20);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.grey,
-        title: Text("scaffold"),
+        title: Text("Quitouch Categories"),
         actions: [
-          CupertinoButton(
-            child: Text("home"),
-            onPressed: () => Navigator.pop(context),
-          ),
-          CupertinoButton(
-            child: Icon(Icons.add),
+          IconButton(
+            icon: Icon(Icons.add),
             onPressed: () {
               _showCateAddAlert();
             },
           ),
         ],
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          const Text("categories"),
-          FutureBuilder(
-            future: vm.fetchCategories(),
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
-                List<Category> categories = snapshot.data as List<Category>;
-                return ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: categories.length,
-                  itemBuilder: (context, index) {
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Container(
-                          child: Text(categories[index].name),
-                          padding: const EdgeInsets.all(10),
+      body: FutureBuilder(
+        future: vm.fetchCategories(),
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            List<Category> categories = snapshot.data as List<Category>;
+            return ListView.builder(
+              scrollDirection: Axis.vertical,
+              shrinkWrap: true,
+              itemCount: categories.length,
+              itemBuilder: (context, index) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          _showCateEditAlert(categories[index]);
+                        });
+                      },
+                      child: Container(
+                        width: 240,
+                        height: 100,
+                        padding: EdgeInsets.all(10),
+                        margin: EdgeInsets.all(10),
+                        alignment: Alignment.center,
+                        child: Text(
+                          categories[index].name,
+                          style: textStyle01,
                         ),
-                        Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              CupertinoButton(
-                                child: const Icon(
-                                  Icons.edit,
-                                  color: Colors.black,
-                                ),
-                                onPressed: () {
-                                  _showCateEditAlert(categories[index]);
-                                },
-                              ),
-                              CupertinoButton(
-                                child: const Icon(
-                                  Icons.delete,
-                                  color: Colors.black,
-                                ),
-                                onPressed: () {
-                                  _showCateDeleteAlert(categories[index]);
-                                },
-                              ),
-                            ]),
-                      ],
-                    );
-                  },
+                        decoration: BoxDecoration(
+                          image: DecorationImage(
+                              image: AssetImage("images/quitouch_button.png"),
+                              fit: BoxFit.contain),
+                        ),
+                      ),
+                    ),
+                    IconButton(
+                      icon: const Icon(
+                        Icons.delete,
+                        color: Colors.black,
+                        size: 50,
+                      ),
+                      onPressed: () {
+                        _showCateDeleteAlert(categories[index]);
+                      },
+                    ),
+                  ],
                 );
-              } else {
-                return Text("loading..");
-              }
-            },
-          ),
-        ],
+              },
+            );
+          } else {
+            return const Text("loading..");
+          }
+        },
       ),
     );
   }
 }
+
+// Row(
+//                               mainAxisAlignment: MainAxisAlignment.end,
+//                               children: [
+//                                 IconButton(
+//                                   icon: const Icon(
+//                                     Icons.edit,
+//                                     color: Colors.black,
+//                                   ),
+//                                   onPressed: () {
+//                                     _showCateEditAlert(categories[index]);
+//                                   },
+//                                 ),
+//                                 
+//                               ]),

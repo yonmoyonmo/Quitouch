@@ -18,20 +18,27 @@ class _QuitouchHomeState extends State<QuitouchHome> {
   int touchCount = 0;
 
   void _wellDoneAlert(int count) {
-    showCupertinoDialog(
+    showDialog(
       barrierDismissible: true,
       context: context,
       builder: (context) {
-        return CupertinoAlertDialog(
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
           title: const Text("Well Done!!"),
-          content: Column(children: [
-            Text(count.toString()),
-            SizedBox(height: 10),
-            const Image(image: AssetImage("images/donetachi.png")),
-          ]),
+          content: Container(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Text(count.toString()),
+                const Image(image: AssetImage("images/donetachi.png")),
+              ],
+            ),
+          ),
           actions: [
-            CupertinoDialogAction(
-              isDefaultAction: true,
+            ElevatedButton(
               child: const Text("confirm"),
               onPressed: () async {
                 Navigator.pop(context);
@@ -45,22 +52,35 @@ class _QuitouchHomeState extends State<QuitouchHome> {
 
   @override
   Widget build(BuildContext context) {
+    TextStyle textStyle01 = TextStyle(color: Colors.white, fontSize: 20);
+    TextStyle textStyle02 = TextStyle(color: Colors.white, fontSize: 20);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.grey,
-        title: Text("scaffold"),
+        title: Text("Quitouch"),
         actions: [
           CupertinoButton(
             child: const Text("records"),
             onPressed: () async {
-              await Navigator.pushNamed(context, '/records');
+              await Navigator.pushNamed(context, '/records')
+                  .then((_) => setState(() {
+                        this.selectedCategory = null;
+                        this.touchCount = 0;
+                      }));
+              ;
               setState(() {});
             },
           ),
           CupertinoButton(
             child: const Text("categories"),
             onPressed: () async {
-              await Navigator.pushNamed(context, '/edit');
+              await Navigator.pushNamed(context, '/edit')
+                  .then((_) => setState(() {
+                        this.selectedCategory = null;
+                        this.touchCount = 0;
+                      }));
+              ;
               setState(() {});
             },
           ),
@@ -87,16 +107,18 @@ class _QuitouchHomeState extends State<QuitouchHome> {
                         onTap: () {
                           setState(() {
                             selectedCategory = categories[index];
+                            touchCount = 0;
                           });
                         },
                         child: Container(
-                          width: 120,
-                          height: 50,
+                          width: 132,
+                          height: 55,
+                          padding: EdgeInsets.all(10),
                           margin: EdgeInsets.all(10),
                           alignment: Alignment.center,
                           child: Text(
                             categories[index].name,
-                            style: TextStyle(color: Colors.white, fontSize: 20),
+                            style: textStyle01,
                           ),
                           decoration: BoxDecoration(
                             image: DecorationImage(
@@ -114,16 +136,34 @@ class _QuitouchHomeState extends State<QuitouchHome> {
             ),
           ),
           //
-          Text(selectedCategory != null ? selectedCategory!.name : ""),
+
+          Container(
+            width: 240,
+            height: 100,
+            margin: EdgeInsets.all(10),
+            alignment: Alignment.center,
+            child: Text(
+              selectedCategory != null ? selectedCategory!.name : "select one!",
+              style: textStyle02,
+            ),
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage("images/quitouch_button.png"),
+                  fit: BoxFit.contain),
+            ),
+          ),
           //
           CupertinoButton(
             onPressed: () {
               HapticFeedback.mediumImpact();
               setState(() {
-                touchCount++;
+                if (selectedCategory != null) {
+                  touchCount++;
+                }
               });
             },
-            child: const Image(image: AssetImage("images/quitachi1.png")),
+            child: Image(
+                image: AssetImage('images/quitachi${touchCount % 4}.png')),
           ),
           //
           if (touchCount != 0) Text(touchCount.toString()),

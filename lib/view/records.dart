@@ -16,24 +16,30 @@ class _RecordsState extends State<Records> {
   final vm = RecordsViewModel();
   Category? selectedCategory;
   var howMany = 0;
+  var currentPageCount = 0;
   var offset = 0;
 
   @override
   Widget build(BuildContext context) {
+    TextStyle textStyle01 = TextStyle(color: Colors.white, fontSize: 20);
+    TextStyle textStyle02 = TextStyle(color: Colors.white, fontSize: 24);
+    TextStyle textStyle03 = TextStyle(color: Colors.black, fontSize: 20);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.grey,
-        title: Text("scaffold"),
+        title: Text("Quitouch Records"),
         actions: [
           CupertinoButton(
-            child: const Text("home"),
-            onPressed: () => Navigator.pop(context),
+            child: const Text("dummy"),
+            onPressed: () {},
           ),
         ],
       ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
+          //cates
           Container(
             width: double.infinity,
             height: MediaQuery.of(context).size.height / 10,
@@ -55,13 +61,14 @@ class _RecordsState extends State<Records> {
                           });
                         },
                         child: Container(
-                          width: 120,
-                          height: 50,
+                          width: 132,
+                          height: 55,
+                          padding: EdgeInsets.all(10),
                           margin: EdgeInsets.all(10),
                           alignment: Alignment.center,
                           child: Text(
                             categories[index].name,
-                            style: TextStyle(color: Colors.white, fontSize: 20),
+                            style: textStyle01,
                           ),
                           decoration: BoxDecoration(
                             image: DecorationImage(
@@ -78,45 +85,68 @@ class _RecordsState extends State<Records> {
               },
             ),
           ),
-          //
-          Text(selectedCategory != null ? selectedCategory!.name : ""),
-          //
-          Text(howMany != 0 ? howMany.toString() + " times" : ""),
-          //
+          //selected cate
+          Container(
+            width: 240,
+            height: 100,
+            margin: EdgeInsets.all(10),
+            alignment: Alignment.center,
+            child: Text(
+              selectedCategory != null ? selectedCategory!.name : "select one!",
+              style: textStyle02,
+            ),
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage("images/quitouch_button.png"),
+                  fit: BoxFit.contain),
+            ),
+          ),
+          //times
+          Text(
+            howMany != 0 ? howMany.toString() + " times" : "0 times",
+            style: textStyle03,
+          ),
+
           if (selectedCategory != null)
-            Column(children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  CupertinoButton(
-                    child: Row(children: const [
-                      Icon(Icons.arrow_back_ios),
-                      Text("previous page"),
-                    ]),
-                    onPressed: () {
-                      if (offset != 0) {
+            Column(
+              children: [
+                //page buttons
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    TextButton(
+                      child: Row(children: const [
+                        Icon(Icons.arrow_back_ios),
+                        Text("previous page"),
+                      ]),
+                      onPressed: () {
+                        if (offset != 0) {
+                          setState(() {
+                            offset = offset - 20;
+                          });
+                        }
+                      },
+                    ),
+                    TextButton(
+                      child: Row(children: const [
+                        Text("next page"),
+                        Icon(Icons.arrow_forward_ios),
+                      ]),
+                      onPressed: () {
                         setState(() {
-                          offset = offset - 20;
+                          if (currentPageCount > 19) {
+                            offset += 20;
+                          }
                         });
-                      }
-                    },
-                  ),
-                  CupertinoButton(
-                    child: Row(children: const [
-                      Text("next page"),
-                      Icon(Icons.arrow_forward_ios),
-                    ]),
-                    onPressed: () {
-                      setState(() {
-                        offset = offset + 20;
-                      });
-                    },
-                  ),
-                ],
-              ),
-              Container(
-                padding: EdgeInsets.all(10),
-                child: FutureBuilder(
+                      },
+                    ),
+                  ],
+                ),
+                //records
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.5,
+                  padding: EdgeInsets.all(10),
+                  child: FutureBuilder(
                     future:
                         vm.fetchPatiencRecords(selectedCategory!, 20, offset),
                     builder: (context, snapshot) {
@@ -127,6 +157,7 @@ class _RecordsState extends State<Records> {
                         SchedulerBinding.instance!.addPostFrameCallback((_) {
                           setState(() {
                             howMany = vm.counts;
+                            currentPageCount = vm.currentPageCounts;
                           });
                         });
 
@@ -135,23 +166,43 @@ class _RecordsState extends State<Records> {
                           shrinkWrap: true,
                           itemCount: records.length,
                           itemBuilder: (context, index) {
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text((index + 1).toString()),
-                                Text("touch : " +
-                                    records[index].touchCount.toString()),
-                                Text(records[index].createdAt),
-                              ],
+                            return Container(
+                              padding: EdgeInsets.all(10),
+                              decoration: BoxDecoration(
+                                  border: Border(
+                                bottom:
+                                    BorderSide(color: Colors.black, width: 1),
+                              )),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    (index + 1).toString(),
+                                    style: textStyle03,
+                                  ),
+                                  Text(
+                                    "touch : " +
+                                        records[index].touchCount.toString(),
+                                    style: textStyle03,
+                                  ),
+                                  Text(
+                                    records[index].createdAt,
+                                    style: textStyle03,
+                                  ),
+                                ],
+                              ),
                             );
                           },
                         );
                       } else {
                         return const Text("loading..");
                       }
-                    }),
-              ),
-            ]),
+                    },
+                  ),
+                ),
+              ],
+            ),
         ],
       ),
     );

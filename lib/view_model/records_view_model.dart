@@ -6,6 +6,7 @@ class RecordsViewModel {
   final repository = CateRecordRepository();
 
   var counts = 0;
+  var currentPageCounts = 0;
 
   Future<List<Category>> fetchCategories() async {
     List<Category> _categories;
@@ -20,6 +21,7 @@ class RecordsViewModel {
       patienceRecords = await repository.selectPatienceRecordByCateWithLimit(
           selectedCategory, limit, offset);
       counts = await repository.countOfPatienceRecords(selectedCategory);
+      currentPageCounts = patienceRecords.length;
     }
     return patienceRecords;
   }
