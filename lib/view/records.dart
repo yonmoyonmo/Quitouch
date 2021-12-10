@@ -48,13 +48,28 @@ class _RecordsState extends State<Records> {
                     shrinkWrap: true,
                     itemCount: categories.length,
                     itemBuilder: (context, index) {
-                      return CupertinoButton(
-                          child: Text(categories[index].name),
-                          onPressed: () {
-                            setState(() {
-                              selectedCategory = categories[index];
-                            });
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            selectedCategory = categories[index];
                           });
+                        },
+                        child: Container(
+                          width: 120,
+                          height: 50,
+                          margin: EdgeInsets.all(10),
+                          alignment: Alignment.center,
+                          child: Text(
+                            categories[index].name,
+                            style: TextStyle(color: Colors.white, fontSize: 20),
+                          ),
+                          decoration: BoxDecoration(
+                            image: DecorationImage(
+                                image: AssetImage("images/quitouch_button.png"),
+                                fit: BoxFit.contain),
+                          ),
+                        ),
+                      );
                     },
                   );
                 } else {
@@ -63,8 +78,11 @@ class _RecordsState extends State<Records> {
               },
             ),
           ),
+          //
           Text(selectedCategory != null ? selectedCategory!.name : ""),
+          //
           Text(howMany != 0 ? howMany.toString() + " times" : ""),
+          //
           if (selectedCategory != null)
             Column(children: [
               Row(

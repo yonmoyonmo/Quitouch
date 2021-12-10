@@ -17,6 +17,15 @@ class Quitouch extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+        fontFamily: 'DungGeunMo',
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+        brightness: Brightness.light,
+        backgroundColor: Colors.white,
+        primaryColor: Colors.blueGrey,
+        primarySwatch: Colors.blueGrey,
+        scaffoldBackgroundColor: Colors.white,
+      ),
       routes: {
         '/': (_) => QuitouchHome(),
         '/edit': (_) => CategoryEdit(),
