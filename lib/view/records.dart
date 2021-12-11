@@ -223,7 +223,7 @@ class _RecordsState extends State<Records> {
                     decoration: BoxDecoration(
                       color: Color.fromRGBO(181, 181, 181, 0.6),
                     ),
-                    height: MediaQuery.of(context).size.height * 0.48,
+                    height: MediaQuery.of(context).size.height * 0.4,
                     padding: EdgeInsets.all(10),
                     margin: EdgeInsets.all(10),
                     child: FutureBuilder(
@@ -250,14 +250,17 @@ class _RecordsState extends State<Records> {
                                 isThreeLine: true,
                                 leading: Text(
                                   (index + 1).toString(),
-                                  style: TextStyles.textStyle03black,
                                 ),
                                 title: Text(
                                   "Quitouched " +
                                       (records[index].touchCount).toString() +
                                       " times",
+                                  style: TextStyles.textStyle03black,
                                 ),
-                                subtitle: Text(records[index].createdAt),
+                                subtitle: Text(
+                                  records[index].createdAt,
+                                  style: TextStyles.textStyle04black,
+                                ),
                                 trailing: TextButton(
                                   child: Image(
                                     image: AssetImage("images/trashcan.png"),

@@ -19,7 +19,7 @@ class Quitouch extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         fontFamily: 'DungGeunMo',
-        primaryColor: Colors.black,
+        primarySwatch: Colors.deepPurple,
       ),
       routes: {
         '/': (_) => QuitouchHome(),
