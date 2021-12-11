@@ -219,18 +219,3 @@ class _CategoryEditState extends State<CategoryEdit> {
     );
   }
 }
-
-// Row(
-//                               mainAxisAlignment: MainAxisAlignment.end,
-//                               children: [
-//                                 IconButton(
-//                                   icon: const Icon(
-//                                     Icons.edit,
-//                                     color: Colors.black,
-//                                   ),
-//                                   onPressed: () {
-//                                     _showCateEditAlert(categories[index]);
-//                                   },
-//                                 ),
-//                                 
-//                               ]),

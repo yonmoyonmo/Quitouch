@@ -25,4 +25,14 @@ class RecordsViewModel {
     }
     return patienceRecords;
   }
+
+  Future<bool> deletePatienceRecord(PatienceRecord selectedRecord) async {
+    if (selectedRecord.id != "null") {
+      await repository.deletePatienceRecordById(selectedRecord.id);
+      return true;
+    } else {
+      print("delete patience record faild : id == null");
+      return false;
+    }
+  }
 }

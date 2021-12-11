@@ -3,6 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:quitouch/model/category.dart';
 import 'package:quitouch/model/patience_record.dart';
+import 'package:quitouch/view/component/quitouch_button.dart';
+import 'package:quitouch/view/component/selected_cate_container.dart';
+import 'package:quitouch/view/component/textstyles.dart';
 import 'package:quitouch/view_model/records_view_model.dart';
 
 class Records extends StatefulWidget {
@@ -26,12 +29,53 @@ class _RecordsState extends State<Records> {
     super.initState();
   }
 
+  //
+  void _showRecordDeleteAlert(PatienceRecord selectedRecord) {
+    showDialog(
+      barrierDismissible: true,
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10.0)),
+          title: const Text("Delete this Record"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              const Text("Are you sure??"),
+            ],
+          ),
+          actions: [
+            Row(
+              children: [
+                TextButton(
+                  child: QuitouchButton("NO"),
+                  onPressed: () {
+                    setState(() {});
+                    Navigator.pop(context);
+                  },
+                ),
+                TextButton(
+                  child: QuitouchButton("YES"),
+                  onPressed: () async {
+                    await vm.deletePatienceRecord(selectedRecord);
+                    setState(() {});
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            )
+          ],
+        );
+      },
+    );
+  }
+  //
+
   @override
   Widget build(BuildContext context) {
-    TextStyle textStyle01 = TextStyle(color: Colors.white, fontSize: 20);
-    TextStyle textStyle02 = TextStyle(color: Colors.white, fontSize: 24);
-    TextStyle textStyle03 = TextStyle(color: Colors.black, fontSize: 20);
-
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -55,10 +99,10 @@ class _RecordsState extends State<Records> {
         body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            //cates
+            //cates in records (smaller list)
             Container(
               width: double.infinity,
-              height: MediaQuery.of(context).size.height / 10,
+              height: MediaQuery.of(context).size.height / 12,
               decoration: BoxDecoration(color: Colors.transparent),
               child: FutureBuilder(
                 future: _futureCategories,
@@ -77,14 +121,16 @@ class _RecordsState extends State<Records> {
                             });
                           },
                           child: Container(
-                            width: 132,
-                            height: 55,
-                            padding: EdgeInsets.all(10),
-                            margin: EdgeInsets.all(10),
+                            //dddd
+                            width: 96,
+                            height: 40,
+                            padding: EdgeInsets.all(5),
+                            margin: EdgeInsets.all(5),
+                            //dddd
                             alignment: Alignment.center,
                             child: Text(
                               categories[index].name,
-                              style: textStyle01,
+                              style: TextStyles.textStyle05white,
                             ),
                             decoration: BoxDecoration(
                               image: DecorationImage(
@@ -102,89 +148,82 @@ class _RecordsState extends State<Records> {
                 },
               ),
             ),
+
             //selected cate
-            Container(
-              width: 240,
-              height: 100,
-              margin: EdgeInsets.all(10),
-              alignment: Alignment.center,
-              child: Text(
-                selectedCategory != null
-                    ? selectedCategory!.name
-                    : "select one!",
-                style: textStyle02,
-              ),
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage("images/selected_cate.png"),
-                    fit: BoxFit.contain),
-              ),
-            ),
+            (selectedCategory != null)
+                ? SelectedCateContainer(selectedCategory!.name)
+                : SelectedCateContainer("select one!"),
             //times
             Text(
-              howMany != 0 ? howMany.toString() + " times" : "0 times",
-              style: textStyle03,
+              howMany != 0
+                  ? "You've endured " + (howMany.toString()) + " times"
+                  : "",
+              style: TextStyles.textStyle02white,
             ),
 
             if (selectedCategory != null)
               Column(
                 children: [
                   //page buttons
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      TextButton(
-                        child: Row(children: const [
-                          Icon(
-                            Icons.arrow_back_ios,
-                            color: Colors.black,
-                          ),
-                          Text(
-                            "previous page",
-                            style: TextStyle(
-                              fontSize: 20,
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    margin: EdgeInsets.only(left: 20, right: 20),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        TextButton(
+                          child: Row(children: const [
+                            Icon(
+                              Icons.arrow_back_outlined,
                               color: Colors.black,
                             ),
-                          ),
-                        ]),
-                        onPressed: () {
-                          if (offset != 0) {
-                            setState(() {
-                              offset = offset - 20;
-                            });
-                          }
-                        },
-                      ),
-                      TextButton(
-                        child: Row(children: const [
-                          Text(
-                            "next page",
-                            style: TextStyle(
-                              fontSize: 20,
-                              color: Colors.black,
+                            Text(
+                              "previous page",
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.black,
+                              ),
                             ),
-                          ),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            color: Colors.black,
-                          ),
-                        ]),
-                        onPressed: () {
-                          setState(() {
-                            if (currentPageCount > 19) {
-                              offset += 20;
+                          ]),
+                          onPressed: () {
+                            if (offset != 0) {
+                              setState(() {
+                                offset = offset - 20;
+                              });
                             }
-                          });
-                        },
-                      ),
-                    ],
+                          },
+                        ),
+                        TextButton(
+                          child: Row(children: const [
+                            Text(
+                              "next page",
+                              style: TextStyle(
+                                fontSize: 16,
+                                color: Colors.black,
+                              ),
+                            ),
+                            Icon(
+                              Icons.arrow_forward_outlined,
+                              color: Colors.black,
+                            ),
+                          ]),
+                          onPressed: () {
+                            setState(() {
+                              if (currentPageCount > 19) {
+                                offset += 20;
+                              }
+                            });
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                   //records
                   Container(
                     decoration: BoxDecoration(
-                      color: Color.fromRGBO(181, 181, 181, 1),
+                      color: Color.fromRGBO(181, 181, 181, 0.6),
                     ),
-                    height: MediaQuery.of(context).size.height * 0.5,
+                    height: MediaQuery.of(context).size.height * 0.48,
                     padding: EdgeInsets.all(10),
                     margin: EdgeInsets.all(10),
                     child: FutureBuilder(
@@ -207,31 +246,25 @@ class _RecordsState extends State<Records> {
                             shrinkWrap: true,
                             itemCount: records.length,
                             itemBuilder: (context, index) {
-                              return Container(
-                                padding: EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                    border: Border(
-                                  bottom:
-                                      BorderSide(color: Colors.black, width: 1),
-                                )),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      (index + 1).toString(),
-                                      style: textStyle03,
-                                    ),
-                                    Text(
-                                      "touch : " +
-                                          records[index].touchCount.toString(),
-                                      style: textStyle03,
-                                    ),
-                                    Text(
-                                      records[index].createdAt,
-                                      style: textStyle03,
-                                    ),
-                                  ],
+                              return ListTile(
+                                isThreeLine: true,
+                                leading: Text(
+                                  (index + 1).toString(),
+                                  style: TextStyles.textStyle03black,
+                                ),
+                                title: Text(
+                                  "Quitouched " +
+                                      (records[index].touchCount).toString() +
+                                      " times",
+                                ),
+                                subtitle: Text(records[index].createdAt),
+                                trailing: TextButton(
+                                  child: Image(
+                                    image: AssetImage("images/trashcan.png"),
+                                  ),
+                                  onPressed: () {
+                                    _showRecordDeleteAlert(records[index]);
+                                  },
                                 ),
                               );
                             },

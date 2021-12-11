@@ -1,8 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:quitouch/model/category.dart';
+import 'package:quitouch/view/component/quitouch_button.dart';
+import 'package:quitouch/view/component/selected_cate_container.dart';
 import 'package:quitouch/view_model/home_view_model.dart';
 import 'package:flutter/services.dart';
+
+import 'component/textstyles.dart';
 
 class QuitouchHome extends StatefulWidget {
   const QuitouchHome({Key? key}) : super(key: key);
@@ -46,21 +50,7 @@ class _QuitouchHomeState extends State<QuitouchHome> {
           ),
           actions: [
             TextButton(
-              child: Container(
-                alignment: Alignment.center,
-                width: 128,
-                height: 64,
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage("images/done_button.png"),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                child: Text(
-                  "DONE!!",
-                  style: TextStyle(fontSize: 24, color: Colors.white),
-                ),
-              ),
+              child: QuitouchButton("OK"),
               onPressed: () async {
                 Navigator.pop(context);
               },
@@ -73,9 +63,6 @@ class _QuitouchHomeState extends State<QuitouchHome> {
 
   @override
   Widget build(BuildContext context) {
-    TextStyle textStyle01 = TextStyle(color: Colors.white, fontSize: 20);
-    TextStyle textStyle02 = TextStyle(color: Colors.white, fontSize: 24);
-
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -121,6 +108,7 @@ class _QuitouchHomeState extends State<QuitouchHome> {
         body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
+            //cates in home(bigger then records cates)
             Container(
               width: double.infinity,
               height: MediaQuery.of(context).size.height * 0.1,
@@ -147,12 +135,12 @@ class _QuitouchHomeState extends State<QuitouchHome> {
                           child: Container(
                             width: 132,
                             height: 55,
-                            padding: EdgeInsets.all(10),
-                            margin: EdgeInsets.all(10),
+                            padding: EdgeInsets.all(8),
+                            margin: EdgeInsets.all(5),
                             alignment: Alignment.center,
                             child: Text(
                               categories[index].name,
-                              style: textStyle01,
+                              style: TextStyles.textStyle06white,
                             ),
                             decoration: BoxDecoration(
                               image: DecorationImage(
@@ -170,66 +158,52 @@ class _QuitouchHomeState extends State<QuitouchHome> {
                 },
               ),
             ),
-            //
 
-            Container(
-              width: 240,
-              height: 100,
-              margin: EdgeInsets.all(10),
-              alignment: Alignment.center,
-              child: Text(
-                selectedCategory != null
-                    ? selectedCategory!.name
-                    : "select one!",
-                style: textStyle02,
-              ),
-              decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage("images/selected_cate.png"),
-                    fit: BoxFit.contain),
-              ),
-            ),
-            //
-            if (touchCount != 0)
-              Text(
-                touchCount.toString(),
-                style: textStyle02,
-              ),
-            //
-            Container(
-              width: MediaQuery.of(context).size.width * 0.8,
-              height: MediaQuery.of(context).size.width * 0.8,
-              child: CupertinoButton(
-                onPressed: () {
-                  HapticFeedback.mediumImpact();
-                  setState(() {
-                    if (selectedCategory != null) {
-                      touchCount++;
-                    }
-                  });
-                },
-                child: Image(
-                    image: AssetImage('images/quitachi${touchCount % 4}.png')),
-              ),
-            ),
+            //selected cate
+            (selectedCategory != null)
+                ? SelectedCateContainer(selectedCategory!.name)
+                : SelectedCateContainer("select one!"),
 
-            if (selectedCategory != null && touchCount != 0)
-              TextButton(
-                child: Container(
-                  alignment: Alignment.center,
-                  width: 128,
-                  height: 64,
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      image: AssetImage("images/done_button.png"),
-                      fit: BoxFit.cover,
+            //do design touchCount!
+            Stack(
+              alignment: Alignment.topLeft,
+              children: [
+                if (touchCount != 0)
+                  Container(
+                    decoration: BoxDecoration(
+                        color: Colors.grey,
+                        borderRadius: BorderRadius.circular(30)),
+                    padding: EdgeInsets.all(8),
+                    child: Text(
+                      touchCount.toString(),
+                      style: TextStyles.textStyle07white,
                     ),
                   ),
-                  child: Text(
-                    "DONE!!",
-                    style: textStyle02,
+                //kitachi
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.7,
+                  height: MediaQuery.of(context).size.width * 0.7,
+                  child: CupertinoButton(
+                    onPressed: () {
+                      HapticFeedback.mediumImpact();
+                      setState(() {
+                        if (selectedCategory != null) {
+                          touchCount++;
+                        }
+                      });
+                    },
+                    child: Image(
+                      image: AssetImage('images/quitachi${touchCount % 4}.png'),
+                    ),
                   ),
                 ),
+              ],
+            ),
+
+            //donebutton
+            if (selectedCategory != null && touchCount != 0)
+              TextButton(
+                child: QuitouchButton("DONE!!"),
                 onPressed: () async {
                   if (touchCount != 0) {
                     await vm.createPatienceRecord(
