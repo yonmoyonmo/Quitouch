@@ -88,8 +88,9 @@ class _RecordsState extends State<Records> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         appBar: AppBar(
+          backgroundColor: Color.fromRGBO(33, 2, 117, 1),
           elevation: 0.0,
-          backgroundColor: Colors.transparent,
+          centerTitle: true,
           title: Text(
             "Quitouch Records",
             style: TextStyles.textStyle02white,

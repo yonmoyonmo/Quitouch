@@ -2,9 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:quitouch/model/category.dart';
 import 'package:quitouch/view/component/quitouch_button.dart';
+import 'package:quitouch/view/component/quitouch_drawer.dart';
 import 'package:quitouch/view/component/selected_cate_container.dart';
 import 'package:quitouch/view_model/home_view_model.dart';
 import 'package:flutter/services.dart';
+//import 'package:share_plus/share_plus.dart';
 
 import 'component/textstyles.dart';
 
@@ -22,6 +24,8 @@ class _QuitouchHomeState extends State<QuitouchHome> {
   int touchCount = 0;
 
   var animeBool = false;
+
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   void _wellDoneAlert(int count) {
     showDialog(
@@ -63,172 +67,221 @@ class _QuitouchHomeState extends State<QuitouchHome> {
     );
   }
 
+  Future<bool> _onWillPop() async {
+    return (await showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: Text('Exit?!'),
+            content: Text('Do you want to exit this App?'),
+            actions: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: QuitouchButton('NO'),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: QuitouchButton('YES'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        )) ??
+        false;
+  }
+
+  // void _shareQuitouch(BuildContext context) {
+  //   final box = context.findRenderObject() as RenderBox?;
+  //   Share.share("Let's Quitouch!",
+  //       subject: "https://homepage.wonmonae.com",
+  //       sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size);
+  // }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        image: DecorationImage(
-          image: AssetImage("images/backgroundImage.png"),
-          fit: BoxFit.cover,
-        ),
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        appBar: AppBar(
-          elevation: 0.0,
-          backgroundColor: Colors.transparent,
-          title: Text(
-            "Quitouch",
-            style: TextStyles.textStyle02white,
+    return WillPopScope(
+      onWillPop: _onWillPop,
+      child: Container(
+        decoration: BoxDecoration(
+          image: DecorationImage(
+            image: AssetImage("images/backgroundImage.png"),
+            fit: BoxFit.cover,
           ),
-          actions: [
-            TextButton(
-              child: Image(
-                image: AssetImage("images/quitouch_record.png"),
-              ),
-              onPressed: () async {
-                await Navigator.pushNamed(context, '/records')
-                    .then((_) => setState(() {
-                          this.selectedCategory = null;
-                          this.touchCount = 0;
-                        }));
-                ;
-                setState(() {});
-              },
-            ),
-            TextButton(
-              child: Image(image: AssetImage("images/quitouch_cate.png")),
-              onPressed: () async {
-                await Navigator.pushNamed(context, '/edit')
-                    .then((_) => setState(() {
-                          this.selectedCategory = null;
-                          this.touchCount = 0;
-                        }));
-                ;
-                setState(() {});
-              },
-            ),
-          ],
         ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            //cates in home(bigger then records cates)
-            Container(
-              width: double.infinity,
-              height: MediaQuery.of(context).size.height * 0.1,
-              decoration: BoxDecoration(
-                color: Colors.transparent,
+        child: Scaffold(
+          key: _scaffoldKey,
+          backgroundColor: Colors.transparent,
+          //
+          drawer: QuitouchDrawer(),
+          appBar: AppBar(
+            automaticallyImplyLeading: false,
+            backgroundColor: Colors.black,
+            elevation: 0.0,
+            centerTitle: true,
+            title: Text(
+              "Quitouch",
+              style: TextStyles.textStyle02white,
+            ),
+            leading: TextButton(
+              child: Image(
+                image: AssetImage("images/quitouch_appIcon.png"),
               ),
-              child: FutureBuilder(
-                future: vm.fetchCategories(),
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    List<Category> categories = snapshot.data as List<Category>;
-                    return ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      shrinkWrap: true,
-                      itemCount: categories.length,
-                      itemBuilder: (context, index) {
-                        return GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              selectedCategory = categories[index];
-                              touchCount = 0;
-                            });
-                          },
-                          child: Container(
-                            width: 132,
-                            height: 55,
-                            padding: EdgeInsets.all(8),
-                            margin: EdgeInsets.all(5),
-                            alignment: Alignment.center,
-                            child: Text(
-                              categories[index].name,
-                              style: TextStyles.textStyle06white,
+              onPressed: () => _scaffoldKey.currentState!.openDrawer(),
+            ),
+            actions: [
+              TextButton(
+                child: Image(
+                  image: AssetImage("images/quitouch_record.png"),
+                ),
+                onPressed: () async {
+                  await Navigator.pushNamed(context, '/records')
+                      .then((_) => setState(() {
+                            this.selectedCategory = null;
+                            this.touchCount = 0;
+                          }));
+                  ;
+                  setState(() {});
+                },
+              ),
+              TextButton(
+                child: Image(image: AssetImage("images/quitouch_cate.png")),
+                onPressed: () async {
+                  await Navigator.pushNamed(context, '/edit')
+                      .then((_) => setState(() {
+                            this.selectedCategory = null;
+                            this.touchCount = 0;
+                          }));
+                  ;
+                  setState(() {});
+                },
+              ),
+            ],
+          ),
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              //cates in home(bigger then records cates)
+              Container(
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height * 0.1,
+                decoration: BoxDecoration(
+                  color: Colors.transparent,
+                ),
+                child: FutureBuilder(
+                  future: vm.fetchCategories(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      List<Category> categories =
+                          snapshot.data as List<Category>;
+                      return ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        shrinkWrap: true,
+                        itemCount: categories.length,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                selectedCategory = categories[index];
+                                touchCount = 0;
+                              });
+                            },
+                            child: Container(
+                              width: 132,
+                              height: 55,
+                              padding: EdgeInsets.all(8),
+                              margin: EdgeInsets.all(5),
+                              alignment: Alignment.center,
+                              child: Text(
+                                categories[index].name,
+                                style: TextStyles.textStyle06white,
+                              ),
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    image: AssetImage(
+                                        "images/quitouch_button.png"),
+                                    fit: BoxFit.contain),
+                              ),
                             ),
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  image:
-                                      AssetImage("images/quitouch_button.png"),
-                                  fit: BoxFit.contain),
-                            ),
-                          ),
-                        );
-                      },
-                    );
-                  } else {
-                    return const Text("loading..");
+                          );
+                        },
+                      );
+                    } else {
+                      return const Text("loading..");
+                    }
+                  },
+                ),
+              ),
+
+              //selected cate
+              (selectedCategory != null)
+                  ? SelectedCateContainer(selectedCategory!.name)
+                  : SelectedCateContainer("select a category!"),
+
+              //donebutton
+              TextButton(
+                child: QuitouchButton("DONE!!"),
+                onPressed: () async {
+                  if (touchCount != 0) {
+                    await vm.createPatienceRecord(
+                        touchCount, selectedCategory!.id);
+                    _wellDoneAlert(touchCount);
+                    setState(() {
+                      touchCount = 0;
+                    });
                   }
                 },
               ),
-            ),
 
-            //selected cate
-            (selectedCategory != null)
-                ? SelectedCateContainer(selectedCategory!.name)
-                : SelectedCateContainer("select a category!"),
-
-            //donebutton
-            TextButton(
-              child: QuitouchButton("DONE!!"),
-              onPressed: () async {
-                if (touchCount != 0) {
-                  await vm.createPatienceRecord(
-                      touchCount, selectedCategory!.id);
-                  _wellDoneAlert(touchCount);
-                  setState(() {
-                    touchCount = 0;
-                  });
-                }
-              },
-            ),
-
-            //kitachi
-            AnimatedContainer(
-              width: animeBool
-                  ? MediaQuery.of(context).size.width * 0.8
-                  : MediaQuery.of(context).size.width * 0.7,
-              height: animeBool
-                  ? MediaQuery.of(context).size.width * 0.8
-                  : MediaQuery.of(context).size.width * 0.7,
-              duration: Duration(milliseconds: 500),
-              curve: Curves.bounceOut,
-              child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    if (selectedCategory != null) {
-                      animeBool = !animeBool;
-                      touchCount++;
-                      HapticFeedback.mediumImpact();
-                    }
-                  });
-                },
-                child: Stack(
-                  alignment: Alignment.topCenter,
-                  children: [
-                    Image(
-                      image: AssetImage('images/quitachi${touchCount % 4}.png'),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        //touchCount
-                        if (touchCount != 0)
-                          Container(
-                            padding: EdgeInsets.all(8),
-                            child: Text(
-                              touchCount.toString(),
-                              style: TextStyles.textStyle07white,
+              //kitachi
+              AnimatedContainer(
+                width: animeBool
+                    ? MediaQuery.of(context).size.width * 0.8
+                    : MediaQuery.of(context).size.width * 0.7,
+                height: animeBool
+                    ? MediaQuery.of(context).size.width * 0.8
+                    : MediaQuery.of(context).size.width * 0.7,
+                duration: Duration(milliseconds: 500),
+                curve: Curves.bounceOut,
+                child: GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      if (selectedCategory != null) {
+                        animeBool = !animeBool;
+                        touchCount++;
+                        HapticFeedback.mediumImpact();
+                      }
+                    });
+                  },
+                  child: Stack(
+                    alignment: Alignment.topCenter,
+                    children: [
+                      Image(
+                        image:
+                            AssetImage('images/quitachi${touchCount % 4}.png'),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          //touchCount
+                          if (touchCount != 0)
+                            Container(
+                              padding: EdgeInsets.all(8),
+                              child: Text(
+                                touchCount.toString(),
+                                style: TextStyles.textStyle07white,
+                              ),
                             ),
-                          ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
