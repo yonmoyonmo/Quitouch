@@ -8,8 +8,8 @@ class QuitouchButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       alignment: Alignment.center,
-      width: 120,
-      height: 60,
+      width: 106,
+      height: 50,
       decoration: BoxDecoration(
         image: DecorationImage(
           image: AssetImage("images/done_button.png"),

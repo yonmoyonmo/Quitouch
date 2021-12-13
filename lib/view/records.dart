@@ -19,6 +19,7 @@ class _RecordsState extends State<Records> {
   final vm = RecordsViewModel();
   late Future<dynamic> _futureCategories;
   Category? selectedCategory;
+
   var howMany = 0;
   var currentPageCount = 0;
   var offset = 0;
@@ -49,6 +50,7 @@ class _RecordsState extends State<Records> {
           ),
           actions: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 TextButton(
                   child: QuitouchButton("NO"),
@@ -88,13 +90,10 @@ class _RecordsState extends State<Records> {
         appBar: AppBar(
           elevation: 0.0,
           backgroundColor: Colors.transparent,
-          title: Text("Quitouch Records"),
-          // actions: [
-          //   CupertinoButton(
-          //     child: const Text("dummy"),
-          //     onPressed: () {},
-          //   ),
-          // ],
+          title: Text(
+            "Quitouch Records",
+            style: TextStyles.textStyle02white,
+          ),
         ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -152,7 +151,7 @@ class _RecordsState extends State<Records> {
             //selected cate
             (selectedCategory != null)
                 ? SelectedCateContainer(selectedCategory!.name)
-                : SelectedCateContainer("select one!"),
+                : SelectedCateContainer("select a category!"),
             //times
             Text(
               howMany != 0
@@ -223,7 +222,7 @@ class _RecordsState extends State<Records> {
                     decoration: BoxDecoration(
                       color: Color.fromRGBO(181, 181, 181, 0.6),
                     ),
-                    height: MediaQuery.of(context).size.height * 0.4,
+                    height: MediaQuery.of(context).size.height * 0.43,
                     padding: EdgeInsets.all(10),
                     margin: EdgeInsets.all(10),
                     child: FutureBuilder(

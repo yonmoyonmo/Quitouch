@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:sqflite/sqlite_api.dart';
+import 'package:path/path.dart' as p;
 
 class DBClient {
   DBClient._();
@@ -22,7 +23,7 @@ class DBClient {
 
   Future<Database> init() async {
     Directory directory = await getApplicationDocumentsDirectory();
-    String dbPath = directory.path + "quitouch.db";
+    String dbPath = p.join(directory.toString(), "quitouch.db");
     var database = await openDatabase(dbPath, version: 1, onCreate: _onCreate);
     return database;
   }

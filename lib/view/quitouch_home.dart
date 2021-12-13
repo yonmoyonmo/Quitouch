@@ -21,6 +21,8 @@ class _QuitouchHomeState extends State<QuitouchHome> {
   Category? selectedCategory;
   int touchCount = 0;
 
+  var animeBool = false;
+
   void _wellDoneAlert(int count) {
     showDialog(
       barrierDismissible: true,
@@ -75,9 +77,12 @@ class _QuitouchHomeState extends State<QuitouchHome> {
         appBar: AppBar(
           elevation: 0.0,
           backgroundColor: Colors.transparent,
-          title: Text("Quitouch"),
+          title: Text(
+            "Quitouch",
+            style: TextStyles.textStyle02white,
+          ),
           actions: [
-            CupertinoButton(
+            TextButton(
               child: Image(
                 image: AssetImage("images/quitouch_record.png"),
               ),
@@ -91,7 +96,7 @@ class _QuitouchHomeState extends State<QuitouchHome> {
                 setState(() {});
               },
             ),
-            CupertinoButton(
+            TextButton(
               child: Image(image: AssetImage("images/quitouch_cate.png")),
               onPressed: () async {
                 await Navigator.pushNamed(context, '/edit')
@@ -162,59 +167,67 @@ class _QuitouchHomeState extends State<QuitouchHome> {
             //selected cate
             (selectedCategory != null)
                 ? SelectedCateContainer(selectedCategory!.name)
-                : SelectedCateContainer("select one!"),
-
-            //do design touchCount!
-            Stack(
-              alignment: Alignment.topLeft,
-              children: [
-                if (touchCount != 0)
-                  Container(
-                    decoration: BoxDecoration(
-                        color: Colors.grey,
-                        borderRadius: BorderRadius.circular(30)),
-                    padding: EdgeInsets.all(8),
-                    child: Text(
-                      touchCount.toString(),
-                      style: TextStyles.textStyle07white,
-                    ),
-                  ),
-                //kitachi
-                Container(
-                  width: MediaQuery.of(context).size.width * 0.7,
-                  height: MediaQuery.of(context).size.width * 0.7,
-                  child: CupertinoButton(
-                    onPressed: () {
-                      HapticFeedback.mediumImpact();
-                      setState(() {
-                        if (selectedCategory != null) {
-                          touchCount++;
-                        }
-                      });
-                    },
-                    child: Image(
-                      image: AssetImage('images/quitachi${touchCount % 4}.png'),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+                : SelectedCateContainer("select a category!"),
 
             //donebutton
-            if (selectedCategory != null && touchCount != 0)
-              TextButton(
-                child: QuitouchButton("DONE!!"),
-                onPressed: () async {
-                  if (touchCount != 0) {
-                    await vm.createPatienceRecord(
-                        touchCount, selectedCategory!.id);
-                    _wellDoneAlert(touchCount);
-                    setState(() {
-                      touchCount = 0;
-                    });
-                  }
+            TextButton(
+              child: QuitouchButton("DONE!!"),
+              onPressed: () async {
+                if (touchCount != 0) {
+                  await vm.createPatienceRecord(
+                      touchCount, selectedCategory!.id);
+                  _wellDoneAlert(touchCount);
+                  setState(() {
+                    touchCount = 0;
+                  });
+                }
+              },
+            ),
+
+            //kitachi
+            AnimatedContainer(
+              width: animeBool
+                  ? MediaQuery.of(context).size.width * 0.8
+                  : MediaQuery.of(context).size.width * 0.7,
+              height: animeBool
+                  ? MediaQuery.of(context).size.width * 0.8
+                  : MediaQuery.of(context).size.width * 0.7,
+              duration: Duration(milliseconds: 500),
+              curve: Curves.bounceOut,
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    if (selectedCategory != null) {
+                      animeBool = !animeBool;
+                      touchCount++;
+                      HapticFeedback.mediumImpact();
+                    }
+                  });
                 },
+                child: Stack(
+                  alignment: Alignment.topCenter,
+                  children: [
+                    Image(
+                      image: AssetImage('images/quitachi${touchCount % 4}.png'),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        //touchCount
+                        if (touchCount != 0)
+                          Container(
+                            padding: EdgeInsets.all(8),
+                            child: Text(
+                              touchCount.toString(),
+                              style: TextStyles.textStyle07white,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
+            ),
           ],
         ),
       ),

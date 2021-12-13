@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:quitouch/repository/dbclient.dart';
 import 'package:quitouch/view/category_edit.dart';
+import 'package:quitouch/view/component/animated_splash.dart';
 import 'package:quitouch/view/quitouch_home.dart';
 import 'package:quitouch/view/records.dart';
 
@@ -22,7 +23,8 @@ class Quitouch extends StatelessWidget {
         primarySwatch: Colors.deepPurple,
       ),
       routes: {
-        '/': (_) => QuitouchHome(),
+        '/': (context) => AnimatedSplashPage(),
+        '/home': (context) => QuitouchHome(),
         '/edit': (_) => CategoryEdit(),
         '/records': (_) => Records(),
       },

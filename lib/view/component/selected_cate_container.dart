@@ -7,9 +7,14 @@ class SelectedCateContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+    print(screenWidth);
     return Container(
-      width: MediaQuery.of(context).size.width * 0.9,
-      height: 120,
+      width: screenWidth > 1000
+          ? MediaQuery.of(context).size.width * 0.4
+          : MediaQuery.of(context).size.width * 0.7,
+      height: screenHeight > 1000 ? 150 : (screenWidth < 380 ? 100 : 120),
       margin: EdgeInsets.all(10),
       alignment: Alignment.center,
       child: Text(
