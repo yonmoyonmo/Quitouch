@@ -10,32 +10,65 @@ class QuitouchDrawer extends StatelessWidget {
       child: Container(
         color: Colors.black,
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            SizedBox(
-              height: 30,
-            ),
             DrawerHeader(
               child: Container(
-                  height: 142,
-                  width: MediaQuery.of(context).size.width,
-                  child: Image.asset(
-                    "images/wonmonaeLogo.png",
-                  )),
-              decoration: BoxDecoration(
-                color: Colors.transparent,
+                alignment: Alignment.center,
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage("images/quitachi2.png"),
+                  ),
+                  color: Colors.transparent,
+                ),
+                child: Text("MENU", style: TextStyles.textStyle08white),
               ),
             ),
-            Text(
-              "01010101",
-              style: TextStyles.textStyle01white,
+            //menus
+            ListTile(
+              contentPadding: EdgeInsets.all(10),
+              leading: Image.asset("images/quitouch_appIcon.png"),
+              title: Text(
+                "About Quitouch",
+                style: TextStyles.textStyle02white,
+              ),
+              onTap: () {},
             ),
-            Text(
-              "02010101",
-              style: TextStyles.textStyle01white,
+            ListTile(
+              contentPadding: EdgeInsets.all(10),
+              leading: Image.asset("images/logo_for_quittouch.png"),
+              title: Text(
+                "About wonmonae",
+                style: TextStyles.textStyle02white,
+              ),
+              onTap: () {},
             ),
-            Text(
-              "03010101",
-              style: TextStyles.textStyle01white,
+            ListTile(
+              contentPadding: EdgeInsets.all(10),
+              leading: Icon(
+                Icons.share,
+                color: Color.fromRGBO(142, 255, 129, 1),
+                size: 50,
+              ),
+              title: Text(
+                "Sharing Quitouch",
+                style: TextStyles.textStyle02white,
+              ),
+              onTap: () {},
+            ),
+            ListTile(
+              contentPadding: EdgeInsets.all(10),
+              leading: Icon(
+                Icons.money_off,
+                color: Color.fromRGBO(142, 255, 129, 1),
+                size: 50,
+              ),
+              title: Text(
+                "Removing ads",
+                style: TextStyles.textStyle02white,
+              ),
+              onTap: () {},
             ),
           ],
         ),

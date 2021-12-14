@@ -127,7 +127,7 @@ class _QuitouchHomeState extends State<QuitouchHome> {
             ),
             leading: TextButton(
               child: Image(
-                image: AssetImage("images/quitouch_appIcon.png"),
+                image: AssetImage("images/quitouch_cate.png"),
               ),
               onPressed: () => _scaffoldKey.currentState!.openDrawer(),
             ),
@@ -147,7 +147,8 @@ class _QuitouchHomeState extends State<QuitouchHome> {
                 },
               ),
               TextButton(
-                child: Image(image: AssetImage("images/quitouch_cate.png")),
+                child:
+                    Image(image: AssetImage("images/quitouch_real_cate.png")),
                 onPressed: () async {
                   await Navigator.pushNamed(context, '/edit')
                       .then((_) => setState(() {
