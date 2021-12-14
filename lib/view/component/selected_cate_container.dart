@@ -9,7 +9,6 @@ class SelectedCateContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
     final screenHeight = MediaQuery.of(context).size.height;
-    print(screenWidth);
     return Container(
       width: screenWidth > 1000
           ? MediaQuery.of(context).size.width * 0.4

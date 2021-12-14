@@ -1,11 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:quitouch/model/category.dart';
 import 'package:quitouch/view/component/quitouch_button.dart';
 import 'package:quitouch/view/component/quitouch_drawer.dart';
 import 'package:quitouch/view/component/selected_cate_container.dart';
 import 'package:quitouch/view_model/home_view_model.dart';
 import 'package:flutter/services.dart';
+import 'dart:io' show Platform;
 //import 'package:share_plus/share_plus.dart';
 
 import 'component/textstyles.dart';
@@ -26,6 +28,10 @@ class _QuitouchHomeState extends State<QuitouchHome> {
   var animeBool = false;
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  //now it's test ids
+  final androidBanner = "ca-app-pub-3940256099942544/6300978111";
+  final iosBanner = "ca-app-pub-3940256099942544/2934735716";
 
   void _wellDoneAlert(int count) {
     showDialog(
@@ -93,15 +99,52 @@ class _QuitouchHomeState extends State<QuitouchHome> {
         false;
   }
 
-  // void _shareQuitouch(BuildContext context) {
-  //   final box = context.findRenderObject() as RenderBox?;
-  //   Share.share("Let's Quitouch!",
-  //       subject: "https://homepage.wonmonae.com",
-  //       sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size);
-  // }
-
   @override
   Widget build(BuildContext context) {
+    var bannerId = "";
+    if (Platform.isIOS) {
+      bannerId = iosBanner;
+    } else if (Platform.isAndroid) {
+      bannerId = androidBanner;
+    } else {
+      bannerId = androidBanner;
+    }
+
+    final BannerAdListener listener = BannerAdListener(
+      // Called when an ad is successfully received.
+      onAdLoaded: (Ad ad) => print('Ad loaded.'),
+      // Called when an ad request failed.
+      onAdFailedToLoad: (Ad ad, LoadAdError error) {
+        // Dispose the ad here to free resources.
+        ad.dispose();
+        print('Ad failed to load: $error');
+      },
+      // Called when an ad opens an overlay that covers the screen.
+      onAdOpened: (Ad ad) => print('Ad opened.'),
+      // Called when an ad removes an overlay that covers the screen.
+      onAdClosed: (Ad ad) => print('Ad closed.'),
+      // Called when an impression occurs on the ad.
+      onAdImpression: (Ad ad) => print('Ad impression.'),
+    );
+
+    final BannerAd quitouchBanner = BannerAd(
+      adUnitId: bannerId,
+      size: AdSize.banner,
+      request: AdRequest(),
+      listener: listener,
+    );
+
+    quitouchBanner.load();
+
+    final AdWidget adWidget = AdWidget(ad: quitouchBanner);
+
+    final Container adContainer = Container(
+      alignment: Alignment.center,
+      child: adWidget,
+      width: quitouchBanner.size.width.toDouble(),
+      height: quitouchBanner.size.height.toDouble(),
+    );
+
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Container(
@@ -281,6 +324,8 @@ class _QuitouchHomeState extends State<QuitouchHome> {
                   ),
                 ),
               ),
+              //banner ads
+              adContainer
             ],
           ),
         ),

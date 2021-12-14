@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:quitouch/view/about_quitouch.dart';
+import 'package:quitouch/view/about_wonmonae.dart';
 import 'package:quitouch/view/component/textstyles.dart';
 
 class QuitouchDrawer extends StatelessWidget {
@@ -33,7 +35,12 @@ class QuitouchDrawer extends StatelessWidget {
                 "About Quitouch",
                 style: TextStyles.textStyle02white,
               ),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AboutQuitouch()),
+                );
+              },
             ),
             ListTile(
               contentPadding: EdgeInsets.all(10),
@@ -42,34 +49,39 @@ class QuitouchDrawer extends StatelessWidget {
                 "About wonmonae",
                 style: TextStyles.textStyle02white,
               ),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => AboutWonmonae()),
+                );
+              },
             ),
-            ListTile(
-              contentPadding: EdgeInsets.all(10),
-              leading: Icon(
-                Icons.share,
-                color: Color.fromRGBO(142, 255, 129, 1),
-                size: 50,
-              ),
-              title: Text(
-                "Sharing Quitouch",
-                style: TextStyles.textStyle02white,
-              ),
-              onTap: () {},
-            ),
-            ListTile(
-              contentPadding: EdgeInsets.all(10),
-              leading: Icon(
-                Icons.money_off,
-                color: Color.fromRGBO(142, 255, 129, 1),
-                size: 50,
-              ),
-              title: Text(
-                "Removing ads",
-                style: TextStyles.textStyle02white,
-              ),
-              onTap: () {},
-            ),
+            // ListTile(
+            //   contentPadding: EdgeInsets.all(10),
+            //   leading: Icon(
+            //     Icons.share,
+            //     color: Color.fromRGBO(142, 255, 129, 1),
+            //     size: 50,
+            //   ),
+            //   title: Text(
+            //     "Sharing Quitouch",
+            //     style: TextStyles.textStyle02white,
+            //   ),
+            //   onTap: () {},
+            // ),
+            // ListTile(
+            //   contentPadding: EdgeInsets.all(10),
+            //   leading: Icon(
+            //     Icons.money_off,
+            //     color: Color.fromRGBO(142, 255, 129, 1),
+            //     size: 50,
+            //   ),
+            //   title: Text(
+            //     "Removing ads",
+            //     style: TextStyles.textStyle02white,
+            //   ),
+            //   onTap: () {},
+            // ),
           ],
         ),
       ),

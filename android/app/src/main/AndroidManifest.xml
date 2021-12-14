@@ -3,6 +3,10 @@
   <application
     android:label="Quitouch"
     android:icon="@mipmap/ic_launcher">
+    <meta-data
+      android:name="com.google.android.gms.ads.APPLICATION_ID"
+      android:value="ca-app-pub-4829575790302011~9633025471"
+    />
     <activity
       android:name=".MainActivity"
       android:launchMode="singleTop"

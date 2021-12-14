@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:quitouch/model/category.dart';
 import 'package:quitouch/model/patience_record.dart';
 import 'package:quitouch/view/component/quitouch_button.dart';
