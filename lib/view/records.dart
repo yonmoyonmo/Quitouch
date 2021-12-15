@@ -81,6 +81,9 @@ class _RecordsState extends State<Records> {
 
   @override
   Widget build(BuildContext context) {
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
+
     return Container(
       decoration: BoxDecoration(
         image: DecorationImage(
@@ -226,9 +229,11 @@ class _RecordsState extends State<Records> {
                     decoration: BoxDecoration(
                       color: Color.fromRGBO(181, 181, 181, 0.6),
                     ),
-                    height: MediaQuery.of(context).size.height * 0.43,
+                    height: screenWidth > 700
+                        ? MediaQuery.of(context).size.height * 0.55
+                        : MediaQuery.of(context).size.height * 0.45,
                     padding: EdgeInsets.all(10),
-                    margin: EdgeInsets.all(10),
+                    margin: EdgeInsets.all(20),
                     child: FutureBuilder(
                       future:
                           vm.fetchPatiencRecords(selectedCategory!, 20, offset),

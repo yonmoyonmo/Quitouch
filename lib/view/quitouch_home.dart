@@ -29,9 +29,9 @@ class _QuitouchHomeState extends State<QuitouchHome> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  //now it's test ids
-  final androidBanner = "ca-app-pub-3940256099942544/6300978111";
-  final iosBanner = "ca-app-pub-3940256099942544/2934735716";
+  //now it's real id
+  final androidBanner = "ca-app-pub-4829575790302011/2876045431";
+  final iosBanner = "ca-app-pub-4829575790302011/5362607973";
 
   void _wellDoneAlert(int count) {
     showDialog(
@@ -204,129 +204,131 @@ class _QuitouchHomeState extends State<QuitouchHome> {
               ),
             ],
           ),
-          body: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              //cates in home(bigger then records cates)
-              Container(
-                width: double.infinity,
-                height: MediaQuery.of(context).size.height * 0.1,
-                decoration: BoxDecoration(
-                  color: Colors.transparent,
+          body: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                //cates in home(bigger then records cates)
+                Container(
+                  width: double.infinity,
+                  height: MediaQuery.of(context).size.height * 0.1,
+                  decoration: BoxDecoration(
+                    color: Colors.transparent,
+                  ),
+                  child: FutureBuilder(
+                    future: vm.fetchCategories(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        List<Category> categories =
+                            snapshot.data as List<Category>;
+                        return ListView.builder(
+                          scrollDirection: Axis.horizontal,
+                          shrinkWrap: true,
+                          itemCount: categories.length,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  selectedCategory = categories[index];
+                                  touchCount = 0;
+                                });
+                              },
+                              child: Container(
+                                width: 132,
+                                height: 55,
+                                padding: EdgeInsets.all(8),
+                                margin: EdgeInsets.all(5),
+                                alignment: Alignment.center,
+                                child: Text(
+                                  categories[index].name,
+                                  style: TextStyles.textStyle06white,
+                                ),
+                                decoration: BoxDecoration(
+                                  image: DecorationImage(
+                                      image: AssetImage(
+                                          "images/quitouch_button.png"),
+                                      fit: BoxFit.contain),
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      } else {
+                        return const Text("loading..");
+                      }
+                    },
+                  ),
                 ),
-                child: FutureBuilder(
-                  future: vm.fetchCategories(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasData) {
-                      List<Category> categories =
-                          snapshot.data as List<Category>;
-                      return ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        shrinkWrap: true,
-                        itemCount: categories.length,
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                selectedCategory = categories[index];
-                                touchCount = 0;
-                              });
-                            },
-                            child: Container(
-                              width: 132,
-                              height: 55,
-                              padding: EdgeInsets.all(8),
-                              margin: EdgeInsets.all(5),
-                              alignment: Alignment.center,
-                              child: Text(
-                                categories[index].name,
-                                style: TextStyles.textStyle06white,
-                              ),
-                              decoration: BoxDecoration(
-                                image: DecorationImage(
-                                    image: AssetImage(
-                                        "images/quitouch_button.png"),
-                                    fit: BoxFit.contain),
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    } else {
-                      return const Text("loading..");
+
+                //selected cate
+                (selectedCategory != null)
+                    ? SelectedCateContainer(selectedCategory!.name)
+                    : SelectedCateContainer("select a category!"),
+
+                //donebutton
+                TextButton(
+                  child: QuitouchButton("DONE!!"),
+                  onPressed: () async {
+                    if (touchCount != 0) {
+                      await vm.createPatienceRecord(
+                          touchCount, selectedCategory!.id);
+                      _wellDoneAlert(touchCount);
+                      setState(() {
+                        touchCount = 0;
+                      });
                     }
                   },
                 ),
-              ),
 
-              //selected cate
-              (selectedCategory != null)
-                  ? SelectedCateContainer(selectedCategory!.name)
-                  : SelectedCateContainer("select a category!"),
-
-              //donebutton
-              TextButton(
-                child: QuitouchButton("DONE!!"),
-                onPressed: () async {
-                  if (touchCount != 0) {
-                    await vm.createPatienceRecord(
-                        touchCount, selectedCategory!.id);
-                    _wellDoneAlert(touchCount);
-                    setState(() {
-                      touchCount = 0;
-                    });
-                  }
-                },
-              ),
-
-              //kitachi
-              AnimatedContainer(
-                width: animeBool
-                    ? MediaQuery.of(context).size.width * 0.8
-                    : MediaQuery.of(context).size.width * 0.7,
-                height: animeBool
-                    ? MediaQuery.of(context).size.width * 0.8
-                    : MediaQuery.of(context).size.width * 0.7,
-                duration: Duration(milliseconds: 500),
-                curve: Curves.bounceOut,
-                child: GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      if (selectedCategory != null) {
-                        animeBool = !animeBool;
-                        touchCount++;
-                        HapticFeedback.mediumImpact();
-                      }
-                    });
-                  },
-                  child: Stack(
-                    alignment: Alignment.topCenter,
-                    children: [
-                      Image(
-                        image:
-                            AssetImage('images/quitachi${touchCount % 4}.png'),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          //touchCount
-                          if (touchCount != 0)
-                            Container(
-                              padding: EdgeInsets.all(8),
-                              child: Text(
-                                touchCount.toString(),
-                                style: TextStyles.textStyle07white,
+                //kitachi
+                AnimatedContainer(
+                  width: animeBool
+                      ? MediaQuery.of(context).size.width * 0.8
+                      : MediaQuery.of(context).size.width * 0.7,
+                  height: animeBool
+                      ? MediaQuery.of(context).size.width * 0.8
+                      : MediaQuery.of(context).size.width * 0.7,
+                  duration: Duration(milliseconds: 500),
+                  curve: Curves.bounceOut,
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        if (selectedCategory != null) {
+                          animeBool = !animeBool;
+                          touchCount++;
+                          HapticFeedback.mediumImpact();
+                        }
+                      });
+                    },
+                    child: Stack(
+                      alignment: Alignment.topCenter,
+                      children: [
+                        Image(
+                          image: AssetImage(
+                              'images/quitachi${touchCount % 4}.png'),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            //touchCount
+                            if (touchCount != 0)
+                              Container(
+                                padding: EdgeInsets.all(8),
+                                child: Text(
+                                  touchCount.toString(),
+                                  style: TextStyles.textStyle07white,
+                                ),
                               ),
-                            ),
-                        ],
-                      ),
-                    ],
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              //banner ads
-              adContainer
-            ],
+                //banner ads
+                adContainer
+              ],
+            ),
           ),
         ),
       ),

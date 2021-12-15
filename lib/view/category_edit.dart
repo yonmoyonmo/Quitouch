@@ -250,7 +250,7 @@ class _CategoryEditState extends State<CategoryEdit> {
                         margin: EdgeInsets.all(15),
                         alignment: Alignment.center,
                         child: Row(
-                            mainAxisAlignment: screenWidth > 1000
+                            mainAxisAlignment: screenWidth > 700
                                 ? MainAxisAlignment.spaceAround
                                 : MainAxisAlignment.spaceBetween,
                             children: [

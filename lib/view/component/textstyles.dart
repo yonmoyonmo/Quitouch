@@ -17,4 +17,5 @@ class TextStyles {
       TextStyle(color: Colors.white, fontSize: 30, letterSpacing: 5);
   static TextStyle textStyle08white =
       TextStyle(color: Colors.white, fontSize: 80, letterSpacing: 5);
+  static TextStyle textForDocs = TextStyle(color: Colors.white, fontSize: 28);
 }
