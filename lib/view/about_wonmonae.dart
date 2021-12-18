@@ -36,7 +36,7 @@ class AboutWonmonae extends StatelessWidget {
 
 Sometimes, we all feel like buying something cute and useless aren't we? 
 
-When it comes to the apptores, that sort of apps are few.
+When it comes to the appstores, that sort of apps are few.
 
 Because most app developers think that app should be useful, useless apps have no chance to be published.
 
